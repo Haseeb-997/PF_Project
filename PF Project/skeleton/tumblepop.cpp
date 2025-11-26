@@ -118,7 +118,7 @@ int main()
 
 	bool up_button = false;
 
-	/*char top_left = '\0';
+	char top_left = '\0';
 	char top_right = '\0';
 	char top_mid = '\0';
 
@@ -135,7 +135,7 @@ int main()
 
 	char top_right_up = '\0';
 	char top_mid_up = '\0';
-	char top_left_up = '\0';*/
+	char top_left_up = '\0';
 
 	PlayerTexture.loadFromFile("Data/player.png");
 	PlayerSprite.setTexture(PlayerTexture);
