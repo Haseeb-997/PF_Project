@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
+
 using namespace sf;
 using namespace std;
 int screen_x = 1136;
