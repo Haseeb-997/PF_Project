@@ -251,6 +251,7 @@ int main()
 	{
 		delete[] lvl[i];
 	}
+/* hi ya ma na changes ki hain*/
 	delete[] lvl;
 
 	return 0;
