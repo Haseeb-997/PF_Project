@@ -27,8 +27,9 @@ void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgS
 	}
 }
 
-void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth)
+void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth,int speed)
 {
+	// ground checking while jumping starts
 	offset_y = player_y;
 	offset_y += velocityY;
 	char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
@@ -54,6 +55,11 @@ void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGroun
 	{
 		velocityY = 0;
 	}
+	// till here ground checked
+	
+
+	 
+
 }
 int main()
 {
@@ -219,12 +225,33 @@ int main()
 		// Left
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
+			// left side collision checking
+
+			char left_top = lvl[(int)(player_y) / cell_size][(int)(player_x-15 -PlayerWidth/2 ) / cell_size];
+			char left_mid = lvl[(int)(player_y + PlayerHeight/2) / cell_size][(int)(player_x -15- PlayerWidth/2) / cell_size];
+			char left_bottom = lvl[(int)(player_y + PlayerHeight) / cell_size][(int)(player_x -15- PlayerWidth/2 )/ cell_size];
+
+			if ( left_top == '#' || left_mid == '#' || left_bottom == '#')
+			{
+				player_x=player_x;
+			}
+			else
+			{
 			PlayerSprite.setScale(2, 2);
-			player_x -= speed;
+			player_x -= speed;}
 		}
 		// Right
 		if (Keyboard::isKeyPressed(Keyboard::Right))
 		{
+			// right side collision checking
+			char right_top = lvl[(int)(player_y) / cell_size][(int)(player_x+PlayerWidth + speed) / cell_size];
+			char right_mid = lvl[(int)(player_y + PlayerHeight/2) / cell_size][(int)(player_x+PlayerWidth + speed) / cell_size];
+			char right_bottom = lvl[(int)(player_y + PlayerHeight) / cell_size][(int)(player_x +PlayerWidth+ speed )/ cell_size];
+
+			if ( right_top == '#' || right_mid == '#' || right_bottom == '#')
+			{
+				player_x -= speed;
+			}
 			PlayerSprite.setScale(-2, 2);
 			player_x += speed;
 		}
@@ -238,7 +265,7 @@ int main()
 		window.clear();
 
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
-		player_gravity(lvl, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
+		player_gravity(lvl, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth,speed);
 		PlayerSprite.setPosition(player_x, player_y);
 		window.draw(PlayerSprite);
 
@@ -253,6 +280,5 @@ int main()
 	}
 	
 	delete[] lvl;
-
 	return 0;
 }
