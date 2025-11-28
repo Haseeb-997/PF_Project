@@ -7,8 +7,10 @@
 
 using namespace sf;
 using namespace std;
+
 int screen_x = 1152;
 int screen_y = 896;
+
 void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgSprite, Texture &blockTexture, Sprite &blockSprite, const int height, const int width, const int cell_size)
 {
 	window.draw(bgSprite);
@@ -27,14 +29,13 @@ void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgS
 	}
 }
 
-void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth,int speed)
+void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth)
 {
 	offset_y = player_y;
 	offset_y += velocityY;
-	// Certain changes because of the origin
 	char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
-	char bottom_right_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x + Pwidth) / cell_size];
-	char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x + Pwidth / 2) / cell_size];
+	char bottom_right_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)((player_x) + Pwidth) / cell_size];
+	char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)((player_x) + Pwidth / 2) / cell_size];
 	if (bottom_left_down == '#' || bottom_mid_down == '#' || bottom_right_down == '#')
 	{
 		onGround = true;
@@ -90,8 +91,8 @@ int main()
 	lvlMusic.setLoop(true);
 
 	// player data
-	float player_x = 100;
-	float player_y = 100;
+	float player_x = 382;
+	float player_y = 763;
 
 	float speed = 5;
 
@@ -108,6 +109,7 @@ int main()
 	Sprite PlayerSprite;
 
 	bool onGround = false;
+	bool is_facing_right = false;
 
 	float offset_x = 0;
 	float offset_y = 0;
@@ -143,7 +145,7 @@ int main()
 	PlayerSprite.setTexture(PlayerTexture);
 	PlayerSprite.setScale(2, 2);
 	PlayerSprite.setPosition(player_x, player_y);
-	
+
 	// creating level array
 	lvl = new char *[height];
 	for (int i = 0; i < height; i += 1)
@@ -179,14 +181,14 @@ int main()
 	for (int i = 8; i < 10; i++)
 		lvl[10][i] = '#'; // 10th row
 	for (int i = 3; i < 15; i++)
-		lvl[11][i] = '#'; // 11th row	
+		lvl[11][i] = '#'; // 11th row
 	for (int i = 6; i < 9; i++)
 		lvl[i][10] = '#'; // 10th col
 	for (int i = 0; i < width; i++)
 		lvl[height - 1][i] = '#'; // 13th row
-	for (int i = 0; i < 14; i++) 
+	for (int i = 0; i < 14; i++)
 		lvl[i][0] = '#'; // first column
-	for (int i = 0; i < 14; i++) 
+	for (int i = 0; i < 14; i++)
 		lvl[i][17] = '#'; // last column
 	// adding '.' to all indexes of lvl where # is not present
 	for (int i = 0; i < height; i++)
@@ -216,39 +218,33 @@ int main()
 		}
 
 		// "Movement of the player"
-		// Left
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
-			// PlayerSprite.setScale(2 ,2);
 			offset_x = player_x;
 			offset_x -= speed;
 			left_mid = lvl[(int)(player_y + PlayerHeight / 2) / cell_size][(int)(offset_x) / cell_size];
-			bottom_left = lvl[(int)(player_y+ PlayerHeight) / cell_size][(int)(offset_x) / cell_size];
+			bottom_left = lvl[(int)(player_y + PlayerHeight) / cell_size][(int)(offset_x) / cell_size];
 			if (left_mid == '#' || bottom_left == '#')
-			{
 				left_collide = true;
-			}
 			else
 			{
 				player_x = offset_x;
+				is_facing_right = false;
 				left_collide = false;
 			}
-		}  
-		// Right
+		}
 		if (Keyboard::isKeyPressed(Keyboard::Right))
-		{			
-			// PlayerSprite.setScale(-2 ,2);
+		{
 			offset_x = player_x;
 			offset_x += speed;
 			right_mid = lvl[(int)(player_y + PlayerHeight / 2) / cell_size][(int)(offset_x + PlayerWidth) / cell_size];
-			bottom_right = lvl[(int)(player_y+ PlayerHeight) / cell_size][(int)(offset_x + PlayerWidth) / cell_size];
+			bottom_right = lvl[(int)(player_y + PlayerHeight) / cell_size][(int)(offset_x + PlayerWidth) / cell_size];
 			if (right_mid == '#' || bottom_right == '#')
-			{
 				right_collide = true;
-			}
 			else
 			{
 				player_x = offset_x;
+				is_facing_right = true;
 				right_collide = false;
 			}
 		}
@@ -265,10 +261,18 @@ int main()
 		window.clear();
 
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
-		player_gravity(lvl, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth,speed);
-		PlayerSprite.setPosition(player_x, player_y);
+		player_gravity(lvl, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
+		if (is_facing_right)
+		{
+			PlayerSprite.setScale(-2, 2);
+			PlayerSprite.setPosition(player_x + PlayerWidth, player_y);
+		}
+		else
+		{
+			PlayerSprite.setScale(2, 2);
+			PlayerSprite.setPosition(player_x, player_y);
+		}
 		window.draw(PlayerSprite);
-
 		window.display();
 	}
 
@@ -278,7 +282,7 @@ int main()
 	{
 		delete[] lvl[i];
 	}
-	
+
 	delete[] lvl;
 	return 0;
 }
