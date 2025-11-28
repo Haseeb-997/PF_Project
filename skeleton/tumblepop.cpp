@@ -7,8 +7,8 @@
 
 using namespace sf;
 using namespace std;
-int screen_x = 1136; // 64 * 18 = 1152
-int screen_y = 896; // 64 * 14 = 896
+int screen_x = 1152;
+int screen_y = 896;
 void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgSprite, Texture &blockTexture, Sprite &blockSprite, const int height, const int width, const int cell_size)
 {
 	window.draw(bgSprite);
@@ -32,12 +32,9 @@ void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGroun
 	offset_y = player_y;
 	offset_y += velocityY;
 	// Certain changes because of the origin
-	// char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
-	char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x - Pwidth) / cell_size];
+	char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
 	char bottom_right_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x + Pwidth) / cell_size];
-	// char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x + Pwidth / 2) / cell_size];
-	char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
-
+	char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x + Pwidth / 2) / cell_size];
 	if (bottom_left_down == '#' || bottom_mid_down == '#' || bottom_right_down == '#')
 	{
 		onGround = true;
@@ -118,8 +115,8 @@ int main()
 
 	float terminal_Velocity = 20;
 
-	int PlayerHeight = 34;
-	int PlayerWidth = 32;
+	int PlayerHeight = 68;
+	int PlayerWidth = 64;
 
 	bool up_button = false;
 
@@ -144,9 +141,8 @@ int main()
 
 	PlayerTexture.loadFromFile("Data/player.png");
 	PlayerSprite.setTexture(PlayerTexture);
-	PlayerSprite.setOrigin(PlayerWidth / 2, PlayerHeight / 2); // setting the origin, middle of the player
-	PlayerSprite.setScale(2, 2); // PlayerWidth = 2 * 32 = 64, PlayerHeight = 2 * 34 = 68
-	PlayerSprite.setPosition(player_x, player_y); // this is the x and y coordinate pointing towards the origin
+	PlayerSprite.setScale(2, 2);
+	PlayerSprite.setPosition(player_x, player_y);
 	
 	// creating level array
 	lvl = new char *[height];
@@ -223,41 +219,48 @@ int main()
 		// Left
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
-			// left side collision checking
-			char left_top = lvl[(int)(player_y) / cell_size][(int)(player_x-15 -PlayerWidth/2 ) / cell_size];
-			char left_mid = lvl[(int)(player_y + PlayerHeight/2) / cell_size][(int)(player_x -15- PlayerWidth/2) / cell_size];
-			char left_bottom = lvl[(int)(player_y + PlayerHeight) / cell_size][(int)(player_x -15- PlayerWidth/2 )/ cell_size];
-			if ( left_top == '#' || left_mid == '#' || left_bottom == '#')
+			// PlayerSprite.setScale(2 ,2);
+			offset_x = player_x;
+			offset_x -= speed;
+			left_mid = lvl[(int)(player_y + PlayerHeight / 2) / cell_size][(int)(offset_x) / cell_size];
+			bottom_left = lvl[(int)(player_y+ PlayerHeight) / cell_size][(int)(offset_x) / cell_size];
+			if (left_mid == '#' || bottom_left == '#')
 			{
-				player_x=player_x;
+				left_collide = true;
 			}
 			else
 			{
-				PlayerSprite.setScale(2, 2);
-				player_x -= speed;
+				player_x = offset_x;
+				left_collide = false;
 			}
-		}
+		}  
 		// Right
 		if (Keyboard::isKeyPressed(Keyboard::Right))
-		{
-			// right side collision checking
-			char right_top = lvl[(int)(player_y) / cell_size][(int)(player_x+PlayerWidth + speed) / cell_size];
-			char right_mid = lvl[(int)(player_y + PlayerHeight/2) / cell_size][(int)(player_x+PlayerWidth + speed) / cell_size];
-			char right_bottom = lvl[(int)(player_y + PlayerHeight) / cell_size][(int)(player_x +PlayerWidth+ speed )/ cell_size];
-
-			if ( right_top == '#' || right_mid == '#' || right_bottom == '#')
+		{			
+			// PlayerSprite.setScale(-2 ,2);
+			offset_x = player_x;
+			offset_x += speed;
+			right_mid = lvl[(int)(player_y + PlayerHeight / 2) / cell_size][(int)(offset_x + PlayerWidth) / cell_size];
+			bottom_right = lvl[(int)(player_y+ PlayerHeight) / cell_size][(int)(offset_x + PlayerWidth) / cell_size];
+			if (right_mid == '#' || bottom_right == '#')
 			{
-				player_x -= speed;
+				right_collide = true;
 			}
-			PlayerSprite.setScale(-2, 2);
-			player_x += speed;
+			else
+			{
+				player_x = offset_x;
+				right_collide = false;
+			}
 		}
 		// Up
-		if (Keyboard::isKeyPressed(Keyboard::Up) && onGround)
+		if (Keyboard::isKeyPressed(Keyboard::Up) && onGround && !up_button)
 		{
 			velocityY = jumpStrength;
 			onGround = false;
+			up_button = true;
 		}
+		else
+			up_button = false;
 
 		window.clear();
 
@@ -279,4 +282,3 @@ int main()
 	delete[] lvl;
 	return 0;
 }
-
