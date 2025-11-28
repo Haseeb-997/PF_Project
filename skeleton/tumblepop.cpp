@@ -109,7 +109,7 @@ int main()
 	Sprite PlayerSprite;
 
 	bool onGround = false;
-	bool is_facing_right = false;
+	bool is_facing_right = false; // to track player direction
 
 	float offset_x = 0;
 	float offset_y = 0;
