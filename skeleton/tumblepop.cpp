@@ -11,6 +11,27 @@ using namespace std;
 int screen_x = 1152;
 int screen_y = 896;
 
+// ghost movement function
+void ghost_move(float &ghost_x,float &ghost_speed,float &ghost_y,Sprite  &ghost_Sprite,int temp)
+{
+    ghost_x+=ghost_speed;
+    if (ghost_x<temp)
+    {
+        ghost_speed=2;
+        ghost_Sprite.setScale(-2,2);
+        ghost_x+=50;
+        
+    }
+    if (ghost_x>4*64+temp)
+    {
+        ghost_speed=-2;
+        ghost_Sprite.setScale(2,2);
+        ghost_x-=50;  
+    }
+     ghost_Sprite.setPosition(ghost_x,ghost_y);
+}
+
+
 void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgSprite, Texture &blockTexture, Sprite &blockSprite, const int height, const int width, const int cell_size)
 {
 	window.draw(bgSprite);
@@ -113,6 +134,52 @@ int main()
 
 	blockTexture.loadFromFile("Data/block1.png");
 	blockSprite.setTexture(blockTexture);
+	 //
+    // ghost loading and other  settings
+    Texture ghostTexture1;
+    Sprite ghostSprite1;
+    
+    ghostTexture1.loadFromFile("Data/gh.png");
+    ghostSprite1.setTexture(ghostTexture1); 
+    ghostSprite1.setScale(-2,2);
+    float ghost_x1=128;
+    float ghost_y1=502;
+    ghostSprite1.setTextureRect(IntRect(6,7,37,34));
+    float ghost_speed1=2;
+    //
+    Texture ghostTexture2;
+    Sprite ghostSprite2;
+    
+    ghostTexture2.loadFromFile("Data/gh.png");
+    ghostSprite2.setTexture(ghostTexture2); 
+    ghostSprite2.setScale(-2,2);
+    float ghost_x2=128;
+    float ghost_y2=256;
+    ghostSprite2.setTextureRect(IntRect(6,7,37,34));
+    float ghost_speed2=2;
+    //
+    Texture ghostTexture3;
+    Sprite ghostSprite3;
+    
+    ghostTexture3.loadFromFile("Data/gh.png");
+    ghostSprite3.setTexture(ghostTexture3); 
+    ghostSprite3.setScale(-2,2);
+    float ghost_x3=800;
+    float ghost_y3=256;
+    ghostSprite3.setTextureRect(IntRect(6,7,37,34));
+    float ghost_speed3=2;
+    //
+    Texture ghostTexture4;
+    Sprite ghostSprite4;
+    
+    ghostTexture4.loadFromFile("Data/gh.png");
+    ghostSprite4.setTexture(ghostTexture2); 
+    ghostSprite4.setScale(-2,2);
+    float ghost_x4=800;
+    float ghost_y4=502;
+    ghostSprite4.setTextureRect(IntRect(6,7,37,34));
+    float ghost_speed4=2;
+
 
 	// Music initialisation
 	Music lvlMusic;
@@ -291,6 +358,12 @@ int main()
 			up_button = false;
 
 		window.clear();
+		
+		// ghost movement functio call
+        ghost_move(ghost_x1,ghost_speed1,ghost_y1,ghostSprite1,128);
+        ghost_move(ghost_x2,ghost_speed2,ghost_y2,ghostSprite2,128);
+        ghost_move(ghost_x3,ghost_speed3,ghost_y3,ghostSprite3,800);
+        ghost_move(ghost_x4,ghost_speed4,ghost_y4,ghostSprite4,800); 
 
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
 		player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
@@ -305,6 +378,11 @@ int main()
 			PlayerSprite.setPosition(player_x, player_y);
 		}
 		window.draw(PlayerSprite);
+		// drawing ghosts
+		window.draw(ghostSprite1);
+        window.draw(ghostSprite2);
+        window.draw(ghostSprite3);
+        window.draw(ghostSprite4);
 		window.display();
 	}
 
