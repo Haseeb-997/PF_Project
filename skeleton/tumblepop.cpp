@@ -462,7 +462,7 @@ int main()
 			f_Sprite.setScale(is_facing_right ? -2 : 2, 2);
 			window.draw(f_Sprite);
 		}
-		
+
 		// drawing ghosts
 		window.draw(ghostSprite1);
 		window.draw(ghostSprite2);
