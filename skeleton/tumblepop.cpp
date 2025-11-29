@@ -11,7 +11,7 @@ using namespace std;
 int screen_x = 1152;
 int screen_y = 896;
 
-// ghost movement function
+// ====================ghost movement function====================
 void ghost_move(float &ghost_x, float &ghost_speed, float &ghost_y, Sprite &ghost_Sprite, int temp)
 {
 	ghost_x += ghost_speed;
@@ -151,7 +151,7 @@ int main()
 	blockTexture.loadFromFile("Data/block1.png");
 	blockSprite.setTexture(blockTexture);
 
-	// ghost loading and other settings
+	// ====================ghost loading and other settings====================
 	Texture ghostTexture1;
 	Sprite ghostSprite1;
 
@@ -204,7 +204,7 @@ int main()
 	lvlMusic.play();
 	lvlMusic.setLoop(true);
 
-	// player data
+	// ====================player data====================
 	float player_x = 382;
 	float player_y = 763;
 
@@ -252,11 +252,12 @@ int main()
 	char top_mid_up = '\0';
 	char top_left_up = '\0';
 
+	// ====================Green player====================
 	// player animation 1
 	Texture p1_Texture1;
 	Sprite p1_Sprite1;
 
-	p1_Texture1.loadFromFile("Data/player1.png");
+	p1_Texture1.loadFromFile("Data/green_1.png");
 	p1_Sprite1.setTexture(p1_Texture1);
 	p1_Sprite1.setScale(2, 2);
 	p1_Sprite1.setPosition(player_x, player_y);
@@ -265,7 +266,7 @@ int main()
 	Texture p1_Texture2;
 	Sprite p1_Sprite2;
 
-	p1_Texture2.loadFromFile("Data/player2.png");
+	p1_Texture2.loadFromFile("Data/green_2.png");
 	p1_Sprite2.setTexture(p1_Texture2);
 	p1_Sprite2.setScale(2, 2);
 	p1_Sprite2.setPosition(player_x, player_y);
@@ -274,7 +275,7 @@ int main()
 	Texture p1_Texture3;
 	Sprite p1_Sprite3;
 
-	p1_Texture3.loadFromFile("Data/player3.png");
+	p1_Texture3.loadFromFile("Data/green_3.png");
 	p1_Sprite3.setTexture(p1_Texture3);
 	p1_Sprite3.setScale(2, 2);
 	p1_Sprite3.setPosition(player_x, player_y);
@@ -283,7 +284,7 @@ int main()
 	Texture p1_Texture4;
 	Sprite p1_Sprite4;
 
-	p1_Texture4.loadFromFile("Data/player4.png");
+	p1_Texture4.loadFromFile("Data/green_4.png");
 	p1_Sprite4.setTexture(p1_Texture4);
 	p1_Sprite4.setScale(2, 2);
 	p1_Sprite4.setPosition(player_x, player_y);
@@ -292,17 +293,64 @@ int main()
 	Texture p1_Texture5;
 	Sprite p1_Sprite5;
 
-	p1_Texture5.loadFromFile("Data/player5.png");
+	p1_Texture5.loadFromFile("Data/green_5.png");
 	p1_Sprite5.setTexture(p1_Texture5);
 	p1_Sprite5.setScale(2, 2);
 	p1_Sprite5.setPosition(player_x, player_y);
 
-	Sprite playerFrame[5] = {p1_Sprite1, p1_Sprite2, p1_Sprite3, p1_Sprite4, p1_Sprite5};
+	// ====================Yellow player====================
+	// player animation 1
+	Texture p2_Texture1;
+	Sprite p2_Sprite1;
+
+	p2_Texture1.loadFromFile("Data/yellow_1.png");
+	p2_Sprite1.setTexture(p2_Texture1);
+	p2_Sprite1.setScale(2, 2);
+	p2_Sprite1.setPosition(player_x, player_y);
+
+	// player animation 2
+	Texture p2_Texture2;
+	Sprite p2_Sprite2;
+
+	p2_Texture2.loadFromFile("Data/yellow_2.png");
+	p2_Sprite2.setTexture(p2_Texture2);
+	p2_Sprite2.setScale(2, 2);
+	p2_Sprite2.setPosition(player_x, player_y);
+
+	// player animation 3
+	Texture p2_Texture3;
+	Sprite p2_Sprite3;
+
+	p2_Texture3.loadFromFile("Data/yellow_3.png");
+	p2_Sprite3.setTexture(p2_Texture3);
+	p2_Sprite3.setScale(2, 2);
+	p2_Sprite3.setPosition(player_x, player_y);
+
+	// player animation 4
+	Texture p2_Texture4;
+	Sprite p2_Sprite4;
+
+	p2_Texture4.loadFromFile("Data/yellow_4.png");
+	p2_Sprite4.setTexture(p2_Texture4);
+	p2_Sprite4.setScale(2, 2);
+	p2_Sprite4.setPosition(player_x, player_y);
+
+	// player animation 5
+	Texture p2_Texture5;
+	Sprite p2_Sprite5;
+
+	p2_Texture5.loadFromFile("Data/yellow_5.png");
+	p2_Sprite5.setTexture(p2_Texture5);
+	p2_Sprite5.setScale(2, 2);
+	p2_Sprite5.setPosition(player_x, player_y);
+
+	// array of player sprites for animation
+	Sprite playerFrame[5] = {p2_Sprite1, p2_Sprite2, p2_Sprite3, p2_Sprite4, p2_Sprite5};
 	int frame_index = 0;
 	float animation_timer = 0.0f;
 	const float animation_speed = 0.15f; // Adjust the speed of animation
 
-	// fire
+	// ====================fire====================
 	Texture f_Texture;
 	Sprite f_Sprite;
 
@@ -312,14 +360,18 @@ int main()
 	int FireHeight = 64;
 	int FireWidth = 96;
 
-	// creating level array
+	// ====================creating level array====================
 	lvl = new char *[height];
 	for (int i = 0; i < height; i += 1)
 	{
 		lvl[i] = new char[width];
 	}
 
-	// Adding level 1 blocks
+	// ====================adding '.' to all indexes of lvl where # is not present====================
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			lvl[i][j] = '.';
+	// ====================Adding level 1 blocks====================
 	for (int i = 0; i < width; i++)
 		lvl[0][i] = '#'; // 0th row
 	for (int i = 3; i < 15; i++)
@@ -356,14 +408,9 @@ int main()
 		lvl[i][0] = '#'; // first column
 	for (int i = 0; i < 14; i++)
 		lvl[i][17] = '#'; // last column
-	// adding '.' to all indexes of lvl where # is not present
-	for (int i = 0; i < height; i++)
-		for (int j = 0; j < width; j++)
-			if (lvl[i][j] != '#')
-				lvl[i][j] = '.';
 
 	Event ev;
-	// main loop
+	// ====================main loop====================
 	while (window.isOpen())
 	{
 		while (window.pollEvent(ev))
@@ -383,7 +430,7 @@ int main()
 			window.close();
 		}
 
-		// "Movement of the player"
+		// ====================Movement of the player====================
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
 			offset_x = player_x;
@@ -423,7 +470,7 @@ int main()
 		else
 			up_button = false;
 
-		// Animation of the player
+		// ====================Animation of the player====================
 		if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
 		{
 			animation_timer += animation_speed;
@@ -438,7 +485,7 @@ int main()
 
 		window.clear();
 
-		// ghost movement functio call
+		// ====================ghost movement functio call====================
 		ghost_move(ghost_x1, ghost_speed1, ghost_y1, ghostSprite1, 64, 320);
 		ghost_move(ghost_x2, ghost_speed2, ghost_y2, ghostSprite2, 64, 320);
 		ghost_move(ghost_x3, ghost_speed3, ghost_y3, ghostSprite3, 840, 1090);
@@ -447,13 +494,14 @@ int main()
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
 		player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
 
+		// ====================setting player according to direction====================
 		playerFrame[frame_index].setScale(is_facing_right ? -2 : 2, 2);
 		playerFrame[frame_index].setPosition(player_x + (is_facing_right ? PlayerWidth : 0), player_y);
 
-		// drawing player
+		// ====================drawing player====================
 		window.draw(playerFrame[frame_index]);
 
-		// drawing fire
+		// ====================drawing fire====================
 		float fire_x = is_facing_right ? player_x + PlayerWidth + FireWidth : player_x - FireWidth;
 		float fire_y = player_y + 13.5;
 		f_Sprite.setPosition(fire_x, fire_y);
@@ -463,7 +511,7 @@ int main()
 			window.draw(f_Sprite);
 		}
 
-		// drawing ghosts
+		// ====================drawing ghosts====================
 		window.draw(ghostSprite1);
 		window.draw(ghostSprite2);
 		window.draw(ghostSprite3);
