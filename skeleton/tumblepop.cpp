@@ -29,21 +29,53 @@ void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgS
 	}
 }
 
-void player_gravity(char **lvl, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth)
+void player_gravity(char **lvl, float &offset_x, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth)
 {
 	offset_y = player_y;
 	offset_y += velocityY;
-	char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
-	char bottom_right_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)((player_x) + Pwidth) / cell_size];
-	char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)((player_x) + Pwidth / 2) / cell_size];
-	if (bottom_left_down == '#' || bottom_mid_down == '#' || bottom_right_down == '#')
+	if (velocityY < 0) // moving up
 	{
-		onGround = true;
+		// calculating row and cols
+		int row = (int)offset_y / cell_size;
+		int col_right = (int)(offset_x + Pwidth) / cell_size;
+		int col_left = (int)(offset_x) / cell_size;
+		// rows at which there isn't jumping
+		bool hard_row = (row == 9 || row == 11);
+		// mid col and rows                        column:   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 of row: 9
+		bool hard_col = (col_right > 6 && col_left < 11); // # # # # # . . # # # #  .  .  #  #  #  #  #
+		// using these rows and col to set the blocked region (no jumping zone)
+		bool blocked_region = (hard_row && hard_col);
+		bool block_check = false;
+		int col = (col_left < 7 ? col_right : col_left);
+		if (hard_row && lvl[row][col] == '#')
+			block_check = true; // we found that player is touching the blocks in the blocked region
+		if (block_check && blocked_region) // check both blocked region and block check
+			velocityY = 0;
+		else
+		{
+			if (offset_y >= 0) // offset_y sometimes become negetive bcz of jumpstrength
+			{
+				player_y = offset_y;
+				onGround = false;
+			}
+			else
+				velocityY = 0;
+		}
 	}
 	else
 	{
-		player_y = offset_y;
-		onGround = false;
+		char bottom_left_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)(player_x) / cell_size];
+		char bottom_right_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)((player_x) + Pwidth) / cell_size];
+		char bottom_mid_down = lvl[(int)(offset_y + Pheight) / cell_size][(int)((player_x) + Pwidth / 2) / cell_size];
+		if (bottom_left_down == '#' || bottom_mid_down == '#' || bottom_right_down == '#')
+		{
+			onGround = true;
+		}
+		else
+		{
+			player_y = offset_y;
+			onGround = false;
+		}
 	}
 	if (!onGround)
 	{
@@ -96,7 +128,7 @@ int main()
 
 	float speed = 5;
 
-	const float jumpStrength = -20; // Initial jump velocity
+	const float jumpStrength = -18; // Initial jump velocity
 	const float gravity = 1;		// Gravity acceleration
 
 	bool isJumping = false; // Track if jumping
@@ -261,7 +293,7 @@ int main()
 		window.clear();
 
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
-		player_gravity(lvl, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
+		player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
 		if (is_facing_right)
 		{
 			PlayerSprite.setScale(-2, 2);
