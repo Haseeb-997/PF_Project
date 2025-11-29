@@ -12,17 +12,17 @@ int screen_x = 1152;
 int screen_y = 896;
 
 // ghost movement function
-void ghost_move(float &ghost_x,float &ghost_speed,float &ghost_y,Sprite  &ghost_Sprite,int temp)
+void ghost_move(float &ghost_x,float &ghost_speed,float &ghost_y,Sprite  &ghost_Sprite,int low, int high)
 {
     ghost_x+=ghost_speed;
-    if (ghost_x<temp)
+    if (ghost_x<low)
     {
         ghost_speed=2;
         ghost_Sprite.setScale(-2,2);
         ghost_x+=50;
         
     }
-    if (ghost_x>4*64+temp)
+    if (ghost_x>high)
     {
         ghost_speed=-2;
         ghost_Sprite.setScale(2,2);
@@ -360,10 +360,10 @@ int main()
 		window.clear();
 		
 		// ghost movement functio call
-        ghost_move(ghost_x1,ghost_speed1,ghost_y1,ghostSprite1,128);
-        ghost_move(ghost_x2,ghost_speed2,ghost_y2,ghostSprite2,128);
-        ghost_move(ghost_x3,ghost_speed3,ghost_y3,ghostSprite3,800);
-        ghost_move(ghost_x4,ghost_speed4,ghost_y4,ghostSprite4,800); 
+        ghost_move(ghost_x1,ghost_speed1,ghost_y1,ghostSprite1,64,320);
+        ghost_move(ghost_x2,ghost_speed2,ghost_y2,ghostSprite2,64,320);
+        ghost_move(ghost_x3,ghost_speed3,ghost_y3,ghostSprite3,840,1090);
+        ghost_move(ghost_x4,ghost_speed4,ghost_y4,ghostSprite4,840,1090); 
 
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
 		player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
