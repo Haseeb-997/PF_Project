@@ -136,48 +136,80 @@ int main()
 	bool up_collide = false;
 	bool left_collide = false;
 	bool right_collide = false;
-
-	Texture PlayerTexture;
-	Sprite PlayerSprite;
-
+	
 	bool onGround = false;
 	bool is_facing_right = false; // to track player direction
-
+	
 	float offset_x = 0;
 	float offset_y = 0;
 	float velocityY = 0;
-
+	
 	float terminal_Velocity = 20;
-
+	
 	int PlayerHeight = 68;
 	int PlayerWidth = 64;
-
+	
 	bool up_button = false;
-
+	
 	char top_left = '\0';
 	char top_right = '\0';
 	char top_mid = '\0';
-
+	
 	char left_mid = '\0';
 	char right_mid = '\0';
-
+	
 	char bottom_left = '\0';
 	char bottom_right = '\0';
 	char bottom_mid = '\0';
-
+	
 	char bottom_left_down = '\0';
 	char bottom_right_down = '\0';
 	char bottom_mid_down = '\0';
-
+	
 	char top_right_up = '\0';
 	char top_mid_up = '\0';
 	char top_left_up = '\0';
+	
+	Texture PlayerTexture1;
+	Sprite PlayerSprite1;
+	
+	PlayerTexture1.loadFromFile("Data/player1.png");
+	PlayerSprite1.setTexture(PlayerTexture1);
+	PlayerSprite1.setScale(2, 2);
+	PlayerSprite1.setPosition(player_x, player_y);
+	
+	Texture PlayerTexture2;
+	Sprite PlayerSprite2;
 
-	PlayerTexture.loadFromFile("Data/player.png");
-	PlayerSprite.setTexture(PlayerTexture);
-	PlayerSprite.setScale(2, 2);
-	PlayerSprite.setPosition(player_x, player_y);
+	PlayerTexture2.loadFromFile("Data/player2.png");
+	PlayerSprite2.setTexture(PlayerTexture2);
+	PlayerSprite2.setScale(2, 2);
+	PlayerSprite1.setPosition(player_x, player_y);
 
+	Texture PlayerTexture3;
+	Sprite PlayerSprite3;
+
+	PlayerTexture3.loadFromFile("Data/player3.png");
+	PlayerSprite3.setTexture(PlayerTexture2);
+	PlayerSprite3.setScale(2, 2);
+	PlayerSprite3.setPosition(player_x, player_y);
+
+	Texture PlayerTexture4;
+	Sprite PlayerSprite4;
+
+	PlayerTexture4.loadFromFile("Data/player4.png");
+	PlayerSprite4.setTexture(PlayerTexture2);
+	PlayerSprite4.setScale(2, 2);
+	PlayerSprite4.setPosition(player_x, player_y);
+
+	Texture PlayerTexture5;
+	Sprite PlayerSprite5;
+
+	PlayerTexture5.loadFromFile("Data/player5.png");
+	PlayerSprite5.setTexture(PlayerTexture2);
+	PlayerSprite5.setScale(2, 2);
+	PlayerSprite5.setPosition(player_x, player_y);
+	
 	// creating level array
 	lvl = new char *[height];
 	for (int i = 0; i < height; i += 1)
@@ -296,15 +328,19 @@ int main()
 		player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
 		if (is_facing_right)
 		{
-			PlayerSprite.setScale(-2, 2);
-			PlayerSprite.setPosition(player_x + PlayerWidth, player_y);
+			PlayerSprite1.setScale(-2, 2);
+			PlayerSprite1.setPosition(player_x + PlayerWidth, player_y);
 		}
 		else
 		{
-			PlayerSprite.setScale(2, 2);
-			PlayerSprite.setPosition(player_x, player_y);
+			PlayerSprite1.setScale(2, 2);
+			PlayerSprite1.setPosition(player_x, player_y);
 		}
-		window.draw(PlayerSprite);
+		window.draw(PlayerSprite1);
+		window.draw(PlayerSprite2);
+		window.draw(PlayerSprite3);
+		window.draw(PlayerSprite4);
+		window.draw(PlayerSprite5);
 		window.display();
 	}
 
