@@ -12,7 +12,72 @@ using namespace std;
 int screen_x = 1152;
 int screen_y = 896;
 
-void setting_blocks_lvl1(RenderWindow &window, char **lvl, int height, int width)
+// displaying the selection window
+void display_selection_screen(RenderWindow &window, Sprite &g_Select_Sprite, Sprite &y_Select_Sprite, bool &player_Green, Text &selectText)
+{
+	g_Select_Sprite.setPosition(300, 400);
+	y_Select_Sprite.setPosition(700, 400);
+	g_Select_Sprite.setScale(4, 4);
+	y_Select_Sprite.setScale(4, 4);
+
+	selectText.setString("SELECT YOUR PLAYER");
+	selectText.setCharacterSize(40);
+	selectText.setFillColor(Color::White);
+	selectText.setPosition(240, 200);
+
+	if (player_Green)
+		g_Select_Sprite.setScale(5, 5);
+	else
+		y_Select_Sprite.setScale(5, 5);
+
+	window.clear();
+	window.draw(g_Select_Sprite);
+	window.draw(y_Select_Sprite);
+	window.draw(selectText);
+	window.display();
+}
+
+// main menu
+void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_the_playerT, Text &controlT, int menuarrInd)
+{
+	menuT.setString("MAIN MENU");
+	menuT.setCharacterSize(100);
+	menuT.setFillColor(Color::White);
+	menuT.setPosition(150, 100);
+
+	playgameT.setString("PLAY GAME");
+	playgameT.setCharacterSize(70);
+	playgameT.setFillColor(Color::White);
+	playgameT.setPosition(100, 320);
+
+	select_the_playerT.setString("PLAYER\n\tSELECTION");
+	select_the_playerT.setCharacterSize(70);
+	select_the_playerT.setFillColor(Color::White);
+	select_the_playerT.setPosition(100, 470);
+
+	controlT.setString("CONTROLS");
+	controlT.setCharacterSize(70);
+	controlT.setFillColor(Color::White);
+	controlT.setPosition(100, 720);
+
+	Text menuarr[3] = {playgameT, select_the_playerT, controlT};
+	for (int i = 0; i < 3; i++)
+	{
+		if (i == menuarrInd)
+			menuarr[i].setFillColor(Color::Cyan);
+		else
+			menuarr[i].setFillColor(Color::White);
+	}
+
+	window.clear();
+	window.draw(menuT);
+	for (int i = 0; i < 3; i++)
+		window.draw(menuarr[i]);
+	window.display();
+}
+
+// setting blocks
+void setting_blocks_lvl1(char **lvl, int height, int width)
 {
 
 	for (int i = 0; i < width; i++)
@@ -54,7 +119,7 @@ void setting_blocks_lvl1(RenderWindow &window, char **lvl, int height, int width
 }
 
 // displaying the backgroung image and the blocks
-void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgSprite, Texture &blockTexture, Sprite &blockSprite, const int height, const int width, const int cell_size)
+void display_level(RenderWindow &window, char **lvl, Sprite &bgSprite, Sprite &blockSprite, const int height, const int width, const int cell_size)
 {
 	window.draw(bgSprite);
 
@@ -73,74 +138,13 @@ void display_level(RenderWindow &window, char **lvl, Texture &bgTex, Sprite &bgS
 }
 
 // displaying the tumble pop font window
-void display_tumblepop_image(RenderWindow &window, Sprite &Title_Sprite, bool &isPlayerSelection, Event ev)
+void display_tumblepop_image(RenderWindow &window, Sprite &Title_Sprite)
 {
-	window.clear();
 	window.draw(Title_Sprite);
-	window.display();
-
-	if (ev.type == Event::KeyPressed && Keyboard::isKeyPressed(Keyboard::Enter))
-		isPlayerSelection = true; // if true, then move to player selection screen
-}
-
-// displaying the selection window
-void display_selection_screen(RenderWindow &window, Sprite &g_Select_Sprite, Sprite &y_Select_Sprite, bool &isPlayerSelection, Event ev, bool &player_Green, bool &player_Selected, Text selectText, Sprite controls_Sprite[], Text controlText)
-{
-	g_Select_Sprite.setPosition(300, 400);
-	y_Select_Sprite.setPosition(700, 400);
-	g_Select_Sprite.setScale(4, 4);
-	y_Select_Sprite.setScale(4, 4);
-
-	selectText.setString("SELECT YOUR PLAYER");
-	selectText.setCharacterSize(40);
-	selectText.setFillColor(Color::White);
-	selectText.setPosition(240, 200);
-
-	controlText.setString("CONTROLS");
-	controlText.setCharacterSize(30);
-	controlText.setFillColor(Color::White);
-	controlText.setPosition(70, 761);
-
-	if (Keyboard::isKeyPressed(Keyboard::Right))
-		player_Green = false; // Yellow player
-	if (Keyboard::isKeyPressed(Keyboard::Left))
-		player_Green = true; // Green player
-	if (player_Green)
-		g_Select_Sprite.setScale(5, 5);
-	else
-		y_Select_Sprite.setScale(5, 5);
-	if (ev.type == Event::KeyPressed && Keyboard::isKeyPressed(Keyboard::Enter))
-		player_Selected = true;
-
-	window.clear();
-	window.draw(g_Select_Sprite);
-	window.draw(y_Select_Sprite);
-	window.draw(selectText);
-	window.draw(controlText);
-	for (int i = 0; i < 3; i++)
-	{
-		controls_Sprite[i].setScale(1.5, 1.5);
-		if (i == 0)
-		{
-			controls_Sprite[i].setPosition(347, 718);
-			window.draw(controls_Sprite[i]);
-		}
-		else if (i == 1)
-		{
-			controls_Sprite[i].setPosition(637, 718);
-			window.draw(controls_Sprite[i]);
-		}
-		else if (i == 2)
-		{
-			controls_Sprite[i].setPosition(877, 700);
-			window.draw(controls_Sprite[i]);
-		}
-	}
-	window.display();
 }
 
 // displaying health image
-void display_health_image(RenderWindow &window, Sprite p1_Sprite, Sprite p2_Sprite, bool player_Green)
+void display_health_image(RenderWindow &window, Sprite &p1_Sprite, Sprite &p2_Sprite, bool player_Green)
 {
 	if (player_Green)
 	{
@@ -194,13 +198,13 @@ void enemy_move(float enemy_x[], float enemy_speed[], float enemy_y[], Sprite en
 		{
 			enemy_speed[i] = 2;
 			enemy_Sprite[i].setScale(-2, 2);
-			enemy_x[i] += 16;
+			enemy_x[i] += 64;
 		}
 		if (enemy_x[i] > high[i])
 		{
 			enemy_speed[i] = -2;
 			enemy_Sprite[i].setScale(2, 2);
-			enemy_x[i] -= 16;
+			enemy_x[i] -= 20;
 		}
 		enemy_Sprite[i].setPosition(enemy_x[i], enemy_y[i]);
 	}
@@ -294,7 +298,7 @@ void player_gravity(char **lvl, float &offset_x, float &offset_y, float &velocit
 }
 
 // displaying player
-void display_player(RenderWindow &window, Texture &SpriteSheet, bool player_Green, bool is_player_facing_right, Sprite GreenplayerFrame[], Sprite YellowplayerFrame[], int p_frame_index, float player_x, float player_y, int PlayerWidth, bool onGroundNow, Sprite p1_j_sprite, Sprite p2_j_sprite, bool &down_key, Sprite p1_d_sprite, Sprite p2_d_sprite)
+void display_player(RenderWindow &window, bool player_Green, bool is_player_facing_right, Sprite GreenplayerFrame[], Sprite YellowplayerFrame[], int p_frame_index, float player_x, float player_y, int PlayerWidth, bool onGroundNow, Sprite &p1_j_sprite, Sprite &p2_j_sprite, bool &down_key, Sprite &p1_d_sprite, Sprite &p2_d_sprite)
 {
 	if (!down_key)
 	{
@@ -348,13 +352,27 @@ void display_player(RenderWindow &window, Texture &SpriteSheet, bool player_Gree
 }
 
 // displaying fire
-void display_fire(RenderWindow &window, Texture SpriteSheet, bool is_player_facing_right, float &player_x, float &player_y, int PlayerWidth, Sprite fire_Sprite, int FireWidth, float &fire_x, float &fire_y)
+void display_fire(RenderWindow &window, bool is_player_facing_right, float &player_x, float &player_y, int PlayerWidth, Sprite &fire_Sprite, int FireWidth, float &fire_x, float &fire_y)
 {
 	fire_x = is_player_facing_right ? player_x + PlayerWidth + FireWidth : player_x - FireWidth;
 	fire_y = player_y + 15;
 	fire_Sprite.setPosition(fire_x, fire_y);
 	fire_Sprite.setScale(is_player_facing_right ? -2 : 2, 2);
 	window.draw(fire_Sprite);
+}
+
+// displaying controls
+void display_controls(RenderWindow &window, Sprite controls_Sprite[3])
+{
+	window.clear();
+	for (int i = 0; i < 3; i++)
+	{
+		controls_Sprite[i].setScale(2, 2);
+		if (i == 0) controls_Sprite[i].setPosition(413, 168);
+		else if (i == 1) controls_Sprite[i].setPosition(413, 368);
+		else if (i == 2) controls_Sprite[i].setPosition(413, 568);
+		window.draw(controls_Sprite[i]);
+	}
 }
 
 // is fire hit the enemy
@@ -407,7 +425,6 @@ void enemies_collision(bool is_player_facing_right, float &player_x, float &play
 // displaying game over
 void display_gameover(RenderWindow &window, Text &gameoverText)
 {
-	window.clear();
 	gameoverText.setString("GAME OVER");
 	gameoverText.setCharacterSize(130);
 	gameoverText.setFillColor(Color::White);
@@ -428,7 +445,6 @@ int main()
 	char **lvl;
 
 	// ----------All images----------
-
 	// -----level and background textures and sprites-----
 	Texture bgTex;
 	Sprite bgSprite;
@@ -483,7 +499,7 @@ int main()
 	for (int i = 0; i < total_ghosts; i++)
 	{
 		ghost_sprite[i].setTexture(ghostSheet);
-		ghost_sprite[i].setTextureRect(IntRect(8, 8, 35, 32));
+		ghost_sprite[i].setTextureRect(IntRect(8, 8, 35, 30));
 		ghost_sprite[i].setScale(-2, 2);
 		ghost_sprite[i].setPosition(ghost_x[i], ghost_y[i]);
 	}
@@ -518,39 +534,12 @@ int main()
 	}
 	bool is_s_alive[total_skeletons] = {1, 1, 1, 1};
 
-	// ------Loading Skeleton------
-	// Sprite skeleton_Sprite[5];
-	// for (int i = 0; i < 5; i++)
-	// {
-	// 	skeleton_Sprite[i].setTexture(skeletonSheet);
-	// 	if (i == 0)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(8, 34, 32, 38));
-	// 	else if (i == 1)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(193, 33, 24, 39));
-	// 	else if (i == 2)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(223, 34, 26, 38));
-	// 	else if (i == 3)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(259, 33, 26, 39));
-	// 	else if (i == 4)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(291, 34, 31, 38));
-	// }
-	// Sprite skeletonFrame[5] = {skeleton_Sprite[0], skeleton_Sprite[1], skeleton_Sprite[2], skeleton_Sprite[3], skeleton_Sprite[4]};
-	// int sk_frame_index = 0;
-	// float sk_animation_timer = 0.0f;
-	// const float sk_animation_speed = 0.15f;
-	// float skeleton_x = 190;
-	// float skeleton_y = 248;
-	// int skeleton_width = 64;
-	// int skeleton_height = 78;
-	// bool is_skeleton_facing_right = true;
-
 	// -----The title image-----
 	Texture Title_Texture;
 	Sprite Title_Sprite;
-	Title_Texture.loadFromFile("Data/Title.png");
+	Title_Texture.loadFromFile("Data/Title.jpg");
 	Title_Sprite.setTexture(Title_Texture);
-	Title_Sprite.setPosition(176, 364);
-	Title_Sprite.setScale(2, 2);
+	Title_Sprite.setPosition(0, 0);
 
 	// -----The controls image-----
 	Texture controls_Texture;
@@ -571,13 +560,17 @@ int main()
 	Font gamefont;
 	gamefont.loadFromFile("Data/font.ttf");
 	// setting text appers in selection
-	Text selectText;
+	Text selectText, menuText, select_the_playerText, controlText, gameoverText, playgameText;
 	selectText.setFont(gamefont);
+	// main menu
+	menuText.setFont(gamefont);
+	// play game
+	playgameText.setFont(gamefont);
+	// Select the player
+	select_the_playerText.setFont(gamefont);
 	// setting text appers in controls
-	Text controlText;
 	controlText.setFont(gamefont);
 	// setting text appers in gameover
-	Text gameoverText;
 	gameoverText.setFont(gamefont);
 
 	// ------Loading Green player------
@@ -632,6 +625,32 @@ int main()
 			p2_Sprite[i].setTextureRect(IntRect(525, 220, 31, 42));
 	}
 
+	// ------Loading Skeleton------
+	// Sprite skeleton_Sprite[5];
+	// for (int i = 0; i < 5; i++)
+	// {
+	// 	skeleton_Sprite[i].setTexture(skeletonSheet);
+	// 	if (i == 0)
+	// 		skeleton_Sprite[i].setTextureRect(IntRect(8, 34, 32, 38));
+	// 	else if (i == 1)
+	// 		skeleton_Sprite[i].setTextureRect(IntRect(193, 33, 24, 39));
+	// 	else if (i == 2)
+	// 		skeleton_Sprite[i].setTextureRect(IntRect(223, 34, 26, 38));
+	// 	else if (i == 3)
+	// 		skeleton_Sprite[i].setTextureRect(IntRect(259, 33, 26, 39));
+	// 	else if (i == 4)
+	// 		skeleton_Sprite[i].setTextureRect(IntRect(291, 34, 31, 38));
+	// }
+	// Sprite skeletonFrame[5] = {skeleton_Sprite[0], skeleton_Sprite[1], skeleton_Sprite[2], skeleton_Sprite[3], skeleton_Sprite[4]};
+	// int sk_frame_index = 0;
+	// float sk_animation_timer = 0.0f;
+	// const float sk_animation_speed = 0.15f;
+	// float skeleton_x = 190;
+	// float skeleton_y = 248;
+	// int skeleton_width = 64;
+	// int skeleton_height = 78;
+	// bool is_skeleton_facing_right = true;
+
 	// -----arrays of both players sprites for animation walking----
 	Sprite GreenplayerFrame[5] = {p1_Sprite[0], p1_Sprite[1], p1_Sprite[2], p1_Sprite[3], p1_Sprite[4]};
 	Sprite YellowplayerFrame[5] = {p2_Sprite[0], p2_Sprite[1], p2_Sprite[2], p2_Sprite[3], p2_Sprite[4]};
@@ -640,13 +659,20 @@ int main()
 	// -----speed of animation-----
 	const float p_animation_speed = 0.15f;
 
-	// if it is true, then move to player selection screen
-	bool isPlayerSelection = false;
-	// player selected?
-	bool player_Selected = false;
 	// true -> green , false -> yellow
 	bool player_Green = false;
-	bool all_enem_died = false;
+	// selection index
+	int menuarrInd = 0;
+
+	// So there are 5 states or windows to show the title means Tumblepop image, then menu, then selection, then controls, then game, then gameover
+	const int TITLE = 0;
+	const int MENU = 1;
+	const int SELECT = 2;
+	const int CONTROL = 3;
+	const int GAME = 4;
+	const int GAMEOVER = 5;
+	// The first is the title
+	int current_Window = TITLE;
 
 	// -----Music initialisation-----
 	Music lvlMusic;
@@ -665,12 +691,6 @@ int main()
 	const float jumpStrength = -18; // Initial jump velocity
 	const float gravity = 1;		// Gravity acceleration
 
-	// bool isJumping = false; // Track if jumping
-
-	// bool up_collide = false;
-	// bool left_collide = false;
-	// bool right_collide = false;
-
 	bool onGround = false;
 
 	float offset_x = 0;
@@ -682,8 +702,9 @@ int main()
 	int PlayerHeight = 68;
 	int PlayerWidth = 64;
 
-	// for clampling the player when it reaches ground (down key press)
+	// for clampling the player when it reaches Last ground (down key press)
 	bool reach_last_ground = false;
+	// ignore the tiles for some time when down key is pressed
 	bool ignoring_tiles = false;
 	// to track player direction
 	bool is_player_facing_right = false;
@@ -691,27 +712,8 @@ int main()
 	bool onGroundNow = false;
 	// is fire hits the ememy?
 	bool hit = false;
-	//
+	// down key different sprite
 	bool down_key = false;
-
-	// char top_left = '\0';
-	// char top_right = '\0';
-	// char top_mid = '\0';
-
-	// char left_mid = '\0';
-	// char right_mid = '\0';
-
-	// char bottom_left = '\0';
-	// char bottom_right = '\0';
-	// char bottom_mid = '\0';
-
-	// char bottom_left_down = '\0';
-	// char bottom_right_down = '\0';
-	// char bottom_mid_down = '\0';
-
-	// char top_right_up = '\0';
-	// char top_mid_up = '\0';
-	// char top_left_up = '\0';
 
 	// creating level array
 	lvl = new char *[height];
@@ -726,42 +728,84 @@ int main()
 			lvl[i][j] = '.';
 
 	// -----Adding level 1 blocks-----
-	setting_blocks_lvl1(window, lvl, height, width);
+	setting_blocks_lvl1(lvl, height, width);
 
 	Event ev;
 	// -----main loop-----
 	while (window.isOpen())
 	{
+		// Whenever we press a key, click the mouse, or resize the window, the OS drops an Event into the part of game window. That part can hold many letters at a time.
+		// Event ev; --> ev is a variable (container) which holds the data of one specific event
+		// pollEvent() --> a function that goes to that part and check the last event, it make a copy of that event and stores into the ev.
+		// this function return 0 or 1, 0 when no event, 1 when an event
+		// In each frame we wnat to pull all the events that occurs so that while loop is important
 		while (window.pollEvent(ev))
 		{
+			// ev.type --> what type of event is it?
 			if (ev.type == Event::Closed)
 			{
 				window.close();
 			}
-
+			// the event is of the type "a key is pressed"
 			if (ev.type == Event::KeyPressed)
 			{
+				// we want some keys of event to occur only once so we added such tasks into this loop
+				// in the below we are only changes the states (windows)
+				if (current_Window == TITLE) // if the window is title, on Enter moves to the menu
+				{
+					// which kind of key is pressed
+					if (ev.key.code == Keyboard::Enter)
+						current_Window = MENU;
+				}
+				else if (current_Window == MENU) // if the window is menu
+				{
+					// computing the indexes of the Text in the menu
+					if (ev.key.code == Keyboard::Down)
+						menuarrInd = (menuarrInd + 1) % 3;
+					else if (ev.key.code == Keyboard::Up)
+						menuarrInd = (menuarrInd + 2) % 3;
+
+					else if (ev.key.code == Keyboard::Enter)
+					{
+						if (menuarrInd == 0) // moves to the game
+							current_Window = GAME;
+						if (menuarrInd == 1) // moves to the selection of the player
+							current_Window = SELECT;
+						if (menuarrInd == 2) // moves to the displaying control
+							current_Window = CONTROL;
+					}
+				}
+				else if (current_Window == SELECT)
+				{
+					if (ev.key.code == Keyboard::Right)
+						player_Green = false;
+					else if (ev.key.code == Keyboard::Left)
+						player_Green = true;
+					else if (ev.key.code == Keyboard::Enter)
+					{
+						current_Window = MENU;
+					}
+				}
+				else if (current_Window == CONTROL)
+				{
+					if (ev.key.code == Keyboard::BackSpace)
+						current_Window = MENU;
+				}
+				else if (current_Window == GAME)
+				{
+					if (ev.key.code == Keyboard::Q)
+						current_Window = GAMEOVER;
+				}
+				else if (current_Window == GAMEOVER)
+				{
+					if (ev.key.code == Keyboard::Enter)
+						window.close();
+				}
 			}
 		}
-
-		// First show the tumblepop image
-		if (!isPlayerSelection)
-		{
-			display_tumblepop_image(window, Title_Sprite, isPlayerSelection, ev);
-			continue;
-		}
-		// player selection screen
-		if (isPlayerSelection && !player_Selected)
-		{
-			display_selection_screen(window, g_Select_Sprite, y_Select_Sprite, isPlayerSelection, ev, player_Green, player_Selected, selectText, controls_Sprite, controlText);
-			continue;
-		}
-		// presing escape to close
-		if (Keyboard::isKeyPressed(Keyboard::Escape))
-		{
-			window.close();
-		}
-		if (!all_enem_died)
+		// we do not add game functions to the pollEvent loop bcz these all are longlasting means we want such functions to occur infinitely not just for one
+		// for example move player and enemies
+		if (current_Window == GAME)
 		{
 			// -----Movement of the player-----
 			if (Keyboard::isKeyPressed(Keyboard::Left))
@@ -777,8 +821,8 @@ int main()
 			if (Keyboard::isKeyPressed(Keyboard::Up) && onGround)
 			{
 				velocityY = jumpStrength;
-				// onGround = false;
 			}
+
 			// checking weather the player is on Last Platform
 			if ((int)(player_y + PlayerHeight) / cell_size >= 12)
 			{
@@ -786,6 +830,7 @@ int main()
 			}
 			else
 				reach_last_ground = false;
+
 			// checking if player is in the blocked region (where down movement doesn't ocuur)
 			int col = (int)(player_x + PlayerWidth / 2) / cell_size;
 			int row = (int)(player_y + PlayerHeight / 2) / cell_size;
@@ -797,49 +842,8 @@ int main()
 					velocityY = 10;
 					ignoring_tiles = true;
 					down_key = true;
-					// onGround = false;
 				}
 			}
-			// Animation of the player
-			if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
-			{
-				player_animation(p_animation_timer, p_animation_speed, p_frame_index);
-			}
-			// enemy skeleton move
-			enemy_move(skeleton_x, skeleton_speed, skeleton_y, skeleton_sprite, skeleton_left_x, skeleton_right_x, total_skeletons);
-			// ghost move calling for  different functions
-			enemy_move(ghost_x, ghost_speed, ghost_y, ghost_sprite, ghost_left_x, ghost_right_x, total_ghosts);
-			for (int i = 0; i < total_ghosts; i++)
-			{
-				// ghost_move(ghost_x[i],ghost_speed[i],ghost_y[i],ghost_sprite[i],ghost_left_x,ghost_right_x);
-				// is the specific ghost alive?
-				if (is_g_alive[i])
-					enemies_collision(is_player_facing_right, player_x, player_y, ghost_x[i], ghost_y[i], ghost_speed[i]);
-			}
-			// skeleton collision function call
-			for (int i = 0; i < total_skeletons; i++)
-			{
-				// is the specific skeleton alive?
-				if (is_s_alive[i])
-					enemies_collision(is_player_facing_right, player_x, player_y, skeleton_x[i], skeleton_y[i], skeleton_speed[i]);
-			}
-			// gravity of the player
-			player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth, ignoring_tiles);
-
-			window.clear();
-			display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
-			// for health display
-			display_health_image(window, p1_Sprite[5], p2_Sprite[5], player_Green);
-
-			int foot_y = (int)(player_y + PlayerHeight + 2) / cell_size;
-			char bL = lvl[foot_y][(int)player_x / cell_size];
-			char bM = lvl[foot_y][(int)(player_x + PlayerWidth / 2) / cell_size];
-			char bR = lvl[foot_y][(int)(player_x + PlayerWidth) / cell_size];
-			onGroundNow = (bL == '#' || bM == '#' || bR == '#');
-			display_player(window, SpriteSheet, player_Green, is_player_facing_right, GreenplayerFrame, YellowplayerFrame, p_frame_index, player_x, player_y, PlayerWidth, onGroundNow, p1_Sprite[6], p2_Sprite[6], down_key, p1_Sprite[7], p2_Sprite[7]);
-
-			if (Keyboard::isKeyPressed(Keyboard::Space))
-				display_fire(window, SpriteSheet, is_player_facing_right, player_x, player_y, PlayerWidth, fire_Sprite, FireWidth, fire_x, fire_y);
 
 			// fire and enemies collision
 			if (Keyboard::isKeyPressed(Keyboard::Space))
@@ -858,6 +862,72 @@ int main()
 				}
 			}
 
+			// Animation of the player
+			if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
+			{
+				player_animation(p_animation_timer, p_animation_speed, p_frame_index);
+			}
+
+			// enemy skeleton move
+			enemy_move(skeleton_x, skeleton_speed, skeleton_y, skeleton_sprite, skeleton_left_x, skeleton_right_x, total_skeletons);
+			// ghost move calling for  different functions
+			enemy_move(ghost_x, ghost_speed, ghost_y, ghost_sprite, ghost_left_x, ghost_right_x, total_ghosts);
+
+			for (int i = 0; i < total_ghosts; i++)
+			{
+				// ghost_move(ghost_x[i],ghost_speed[i],ghost_y[i],ghost_sprite[i],ghost_left_x,ghost_right_x);
+				// is the specific ghost alive?
+				if (is_g_alive[i])
+					enemies_collision(is_player_facing_right, player_x, player_y, ghost_x[i], ghost_y[i], ghost_speed[i]);
+			}
+
+			// skeleton collision function call
+			for (int i = 0; i < total_skeletons; i++)
+			{
+				// is the specific skeleton alive?
+				if (is_s_alive[i])
+					enemies_collision(is_player_facing_right, player_x, player_y, skeleton_x[i], skeleton_y[i], skeleton_speed[i]);
+			}
+			// gravity of the player
+
+			player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth, ignoring_tiles);
+		}
+
+		window.clear();
+
+		// now displayig all the stuff
+		if (current_Window == TITLE)
+		{
+			display_tumblepop_image(window, Title_Sprite);
+		}
+		else if (current_Window == MENU)
+		{
+			main_menu(window, menuText, playgameText, select_the_playerText, controlText, menuarrInd);
+		}
+		else if (current_Window == SELECT)
+		{
+			display_selection_screen(window, g_Select_Sprite, y_Select_Sprite, player_Green, selectText);
+		}
+		else if (current_Window == CONTROL)
+		{
+			display_controls(window, controls_Sprite);
+		}
+		else if (current_Window == GAME)
+		{
+			display_level(window, lvl, bgSprite, blockSprite, height, width, cell_size);
+
+			if (Keyboard::isKeyPressed(Keyboard::Space))
+				display_fire(window, is_player_facing_right, player_x, player_y, PlayerWidth, fire_Sprite, FireWidth, fire_x, fire_y);
+
+			int foot_y = (int)(player_y + PlayerHeight + 2) / cell_size;
+			char bL = lvl[foot_y][(int)player_x / cell_size];
+			char bM = lvl[foot_y][(int)(player_x + PlayerWidth / 2) / cell_size];
+			char bR = lvl[foot_y][(int)(player_x + PlayerWidth) / cell_size];
+			onGroundNow = (bL == '#' || bM == '#' || bR == '#');
+			display_player(window, player_Green, is_player_facing_right, GreenplayerFrame, YellowplayerFrame, p_frame_index, player_x, player_y, PlayerWidth, onGroundNow, p1_Sprite[6], p2_Sprite[6], down_key, p1_Sprite[7], p2_Sprite[7]);
+
+			display_health_image(window, p1_Sprite[5], p2_Sprite[5], player_Green);
+
 			// displaying the enemies
 			for (int i = 0; i < total_skeletons; i++)
 			{
@@ -869,63 +939,52 @@ int main()
 				if (is_g_alive[i])
 					window.draw(ghost_sprite[i]);
 			}
-
-			// sk_animation_timer += sk_animation_speed;
-			// if (is_skeleton_facing_right)
-			// {
-			// 	skeleton_x += 2;
-			// }
-			// else
-			// {
-			// 	skeleton_x -= 2;
-			// }
-			// char sk_bottom_mid, sk_bottom_right, sk_bottom_left, sk_right_mid, sk_left_mid;
-			// sk_bottom_left = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x) / cell_size];
-			// sk_bottom_right = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x + skeleton_width) / cell_size];
-			// sk_bottom_mid = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x + skeleton_width / 2) / cell_size];
-			// sk_right_mid = lvl[(int)(skeleton_y + skeleton_height / 2) / cell_size][(int)(skeleton_x + skeleton_width) / cell_size];
-			// sk_left_mid = lvl[(int)(skeleton_y + skeleton_height / 2) / cell_size][(int)(skeleton_x) / cell_size];
-			// if (sk_right_mid == '#')
-			// {
-			// 	is_skeleton_facing_right = false;
-			// }
-			// if (sk_left_mid == '#')
-			// {
-			// 	is_skeleton_facing_right = true;
-			// }
-			// if (!(sk_bottom_left == '#' || sk_bottom_mid == '#' || sk_bottom_right == '#'))
-			// {
-			// 	skeleton_y += 40;
-			// }
-			// if (sk_animation_timer >= 1.0f)
-			// {
-			// 	sk_animation_timer = 0.0f;
-			// 	sk_frame_index++;
-			// 	if (sk_frame_index > 4)
-			// 		sk_frame_index = 0;
-			// }
-			// skeletonFrame[sk_frame_index].setScale(is_skeleton_facing_right ? -2 : 2, 2);
-			// skeletonFrame[sk_frame_index].setPosition(skeleton_x + (is_skeleton_facing_right ? skeleton_width : 0), skeleton_y);
-			// window.draw(skeletonFrame[sk_frame_index]);
-
-			// Checking if all the enemies died
-			for (int i = 0; i < total_ghosts; i++)
-			{
-				if (is_g_alive[i] && is_s_alive)
-				{
-					all_enem_died = false;
-					break;
-				}
-				else
-					all_enem_died = true;
-			}
 		}
-		else
+		else if (current_Window == GAMEOVER)
 		{
 			display_gameover(window, gameoverText);
 		}
+
 		window.display();
 	}
+
+	// sk_animation_timer += sk_animation_speed;
+	// if (is_skeleton_facing_right)
+	// {
+	// 	skeleton_x += 2;
+	// }
+	// else
+	// {
+	// 	skeleton_x -= 2;
+	// }
+	// char sk_bottom_mid, sk_bottom_right, sk_bottom_left, sk_right_mid, sk_left_mid;
+	// sk_bottom_left = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x) / cell_size];
+	// sk_bottom_right = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x + skeleton_width) / cell_size];
+	// sk_bottom_mid = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x + skeleton_width / 2) / cell_size];
+	// sk_right_mid = lvl[(int)(skeleton_y + skeleton_height / 2) / cell_size][(int)(skeleton_x + skeleton_width) / cell_size];
+	// sk_left_mid = lvl[(int)(skeleton_y + skeleton_height / 2) / cell_size][(int)(skeleton_x) / cell_size];
+	// if (sk_right_mid == '#')
+	// {
+	// 	is_skeleton_facing_right = false;
+	// }
+	// if (sk_left_mid == '#')
+	// {
+	// 	is_skeleton_facing_right = true;
+	// }
+	// if (!(sk_bottom_left == '#' || sk_bottom_mid == '#' || sk_bottom_right == '#'))
+	// {
+	// 	skeleton_y += 40;
+	// }
+	// if (sk_animation_timer >= 1.0f)
+	// {
+	// 	sk_animation_timer = 0.0f;
+	// 	sk_frame_index++;
+	// 	if (sk_frame_index > 4)
+	// 		sk_frame_index = 0;
+	// }
+	// skeletonFrame[sk_frame_index].setScale(is_skeleton_facing_right ? -2 : 2, 2);
+	// skeletonFrame[sk_frame_index].setPosition(skeleton_x + (is_skeleton_facing_right ? skeleton_width : 0), skeleton_y);
+	// window.draw(skeletonFrame[sk_frame_index]);
 
 	// stopping music and deleting level array
 	lvlMusic.stop();
