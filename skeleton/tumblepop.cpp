@@ -12,33 +12,41 @@ using namespace std;
 int screen_x = 1152;
 int screen_y = 896;
 
+// -----ALL DISPLAYING FUNCTIONS-----
+
 // displaying the selection window
-void display_selection_screen(RenderWindow &window, Sprite &g_Select_Sprite, Sprite &y_Select_Sprite, bool &player_Green, Text &selectText)
+void display_selection_screen(RenderWindow &window, Sprite &g_Select_Sprite, Sprite &y_Select_Sprite, bool &player_Green, Text &selectText, Text &EnterT)
 {
 	g_Select_Sprite.setPosition(300, 400);
 	y_Select_Sprite.setPosition(700, 400);
-	g_Select_Sprite.setScale(4, 4);
-	y_Select_Sprite.setScale(4, 4);
+	g_Select_Sprite.setScale(4.5, 4.5);
+	y_Select_Sprite.setScale(4.5, 4.5);
 
 	selectText.setString("SELECT YOUR PLAYER");
 	selectText.setCharacterSize(40);
 	selectText.setFillColor(Color::White);
 	selectText.setPosition(240, 200);
 
+	EnterT.setString("PRESS ENTER TO SELECT");
+	EnterT.setCharacterSize(20);
+	EnterT.setFillColor(Color::White);
+	EnterT.setPosition(720, 860);
+
 	if (player_Green)
-		g_Select_Sprite.setScale(5, 5);
+		g_Select_Sprite.setScale(5.5, 5.5);
 	else
-		y_Select_Sprite.setScale(5, 5);
+		y_Select_Sprite.setScale(5.5, 5.5);
 
 	window.clear();
 	window.draw(g_Select_Sprite);
 	window.draw(y_Select_Sprite);
 	window.draw(selectText);
+	window.draw(EnterT);
 	window.display();
 }
 
 // main menu
-void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_the_playerT, Text &controlT, int menuarrInd)
+void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_the_playerT, Text &controlT, int menuarrInd, Text &EnterT)
 {
 	menuT.setString("MAIN MENU");
 	menuT.setCharacterSize(100);
@@ -60,6 +68,11 @@ void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_
 	controlT.setFillColor(Color::White);
 	controlT.setPosition(100, 720);
 
+	EnterT.setString("PRESS ENTER TO GO");
+	EnterT.setCharacterSize(20);
+	EnterT.setFillColor(Color::White);
+	EnterT.setPosition(750, 860);
+
 	Text menuarr[3] = {playgameT, select_the_playerT, controlT};
 	for (int i = 0; i < 3; i++)
 	{
@@ -71,6 +84,7 @@ void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_
 
 	window.clear();
 	window.draw(menuT);
+	window.draw(EnterT);
 	for (int i = 0; i < 3; i++)
 		window.draw(menuarr[i]);
 	window.display();
@@ -160,6 +174,132 @@ void display_health_image(RenderWindow &window, Sprite &p1_Sprite, Sprite &p2_Sp
 	}
 }
 
+// displaying player
+void display_player(RenderWindow &window, bool player_Green, bool is_player_facing_right, Sprite GreenplayerFrame[], Sprite YellowplayerFrame[], int p_frame_index, float player_x, float player_y, int PlayerWidth, bool onGroundNow, Sprite &p1_j_sprite, Sprite &p2_j_sprite, bool &down_key, Sprite &p1_d_sprite, Sprite &p2_d_sprite)
+{
+	if (!down_key)
+	{
+		if (onGroundNow)
+		{
+			if (player_Green)
+			{
+				GreenplayerFrame[p_frame_index].setScale(is_player_facing_right ? -2 : 2, 2);
+				GreenplayerFrame[p_frame_index].setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
+				window.draw(GreenplayerFrame[p_frame_index]);
+			}
+			else
+			{
+				YellowplayerFrame[p_frame_index].setScale(is_player_facing_right ? -2 : 2, 2);
+				YellowplayerFrame[p_frame_index].setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
+				window.draw(YellowplayerFrame[p_frame_index]);
+			}
+		}
+		else
+		{
+			if (player_Green)
+			{
+				p1_j_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
+				p1_j_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
+				window.draw(p1_j_sprite);
+			}
+			else
+			{
+				p2_j_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
+				p2_j_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
+				window.draw(p2_j_sprite);
+			}
+		}
+	}
+	else
+	{
+		if (player_Green)
+		{
+			p1_d_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
+			p1_d_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
+			window.draw(p1_d_sprite);
+		}
+		else
+		{
+			p2_d_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
+			p2_d_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
+			window.draw(p2_d_sprite);
+		}
+		down_key = false;
+	}
+}
+
+// displaying fire
+void display_fire(RenderWindow &window, bool is_player_facing_right, float &player_x, float &player_y, int PlayerWidth, Sprite &fire_Sprite, int FireWidth, float &fire_x, float &fire_y)
+{
+	// fire_y = player_y + 15;
+	// fire_x = is_player_facing_right ? (player_x + PlayerWidth + FireWidth) : (player_x - FireWidth);
+	fire_Sprite.setScale(is_player_facing_right ? -2 : 2, 2);
+	fire_Sprite.setPosition(fire_x, fire_y);
+	window.draw(fire_Sprite);
+}
+
+// displaying controls
+void display_controls(RenderWindow &window, Sprite controls_Sprite[3], Text &BackspaceT)
+{
+	BackspaceT.setString("PRESS BACKSPACE TO GO BACK TO THE MENU");
+	BackspaceT.setCharacterSize(20);
+	BackspaceT.setFillColor(Color::White);
+	BackspaceT.setPosition(175, 860);
+
+	for (int i = 0; i < 3; i++)
+	{
+		controls_Sprite[i].setScale(2, 2);
+		if (i == 0)
+			controls_Sprite[i].setPosition(413, 168);
+		else if (i == 1)
+			controls_Sprite[i].setPosition(413, 368);
+		else if (i == 2)
+			controls_Sprite[i].setPosition(413, 568);
+		window.draw(controls_Sprite[i]);
+	}
+	window.draw(BackspaceT);
+}
+
+// displaying game over
+void display_gameover(RenderWindow &window, Text &gameoverText)
+{
+	gameoverText.setString("GAME OVER");
+	gameoverText.setCharacterSize(130);
+	gameoverText.setFillColor(Color::White);
+	gameoverText.setPosition(0, 448);
+	window.draw(gameoverText);
+}
+
+void display_enemies(RenderWindow &window, Sprite skeleton_sprite[], int total_skeletons, Sprite ghost_sprite[], int total_ghosts, bool is_s_alive[], bool is_g_alive[])
+{
+	for (int i = 0; i < total_skeletons; i++)
+	{
+		if (is_s_alive[i])
+			window.draw(skeleton_sprite[i]);
+	}
+	for (int i = 0; i < total_ghosts; i++)
+	{
+		if (is_g_alive[i])
+			window.draw(ghost_sprite[i]);
+	}
+}
+
+void display_powerups(RenderWindow &window, Text &scoresText, Text &livesText, int scores, int player_lives, bool speed_pu_present, bool life_pu_present, Sprite &speed_sprite, Sprite &life_sprite)
+{
+	scoresText.setString("scores:" + to_string(scores));
+	livesText.setString("Lives: " + to_string(player_lives));
+	window.draw(scoresText);
+	window.draw(livesText);
+
+	// displaying power ups
+	if (speed_pu_present)
+		window.draw(speed_sprite);
+	if (life_pu_present)
+		window.draw(life_sprite);
+}
+
+// -----ALL OTHER FUNCTIONS-----
+
 // movement of the player
 void move_player(char **lvl, float &offset_x, float &player_x, float speed, bool player_Green, float &player_y, int PlayerHeight, const int cell_size, int PlayerWidth, bool is_player_facing_right)
 {
@@ -188,26 +328,89 @@ void move_player(char **lvl, float &offset_x, float &player_x, float speed, bool
 	}
 }
 
-// movement of the enemies
-void enemy_move(float enemy_x[], float enemy_speed[], float enemy_y[], Sprite enemy_Sprite[], float low[], float high[], int total_skeletons)
+// movement of the ghost
+void ghost_move(float g_x[], float g_speed[], float g_y[], Sprite g_Sprite[], float low[], float high[], int ghosts, bool is_g_sucking[])
 {
-	for (int i = 0; i < total_skeletons; i++)
+	for (int i = 0; i < ghosts; i++)
 	{
-		enemy_x[i] += enemy_speed[i];
-		if (enemy_x[i] < low[i])
+		if (is_g_sucking[i])
+			continue;
+		g_x[i] += g_speed[i];
+		if (g_x[i] < low[i])
 		{
-			enemy_speed[i] = 2;
-			enemy_Sprite[i].setScale(-2, 2);
-			enemy_x[i] += 64;
+			g_speed[i] = 2;
+			g_Sprite[i].setScale(-2, 2);
+			g_x[i] += 64;
 		}
-		if (enemy_x[i] > high[i])
+		if (g_x[i] > high[i])
 		{
-			enemy_speed[i] = -2;
-			enemy_Sprite[i].setScale(2, 2);
-			enemy_x[i] -= 20;
+			g_speed[i] = -2;
+			g_Sprite[i].setScale(2, 2);
+			g_x[i] -= 20;
 		}
-		enemy_Sprite[i].setPosition(enemy_x[i], enemy_y[i]);
+		g_Sprite[i].setPosition(g_x[i], g_y[i]);
 	}
+}
+
+// skeleton movement
+void skeleton_move(bool &is_skeleton_facing_right, char **lvl, float &skeleton_x, float &skeleton_y, float &skeleton_speed, Sprite &skeleton_sprite, float &skeleton_gravity)
+{
+	float future_x = skeleton_x;
+	float future_y = skeleton_y;
+	int cell_size = 64;
+	const int sk_width = 64;
+	const int sk_height = 76;
+	if (is_skeleton_facing_right == true)
+		future_x += skeleton_speed;
+
+	else
+		future_x -= skeleton_speed;
+
+	// first goal walls
+	char left_mid = lvl[(int)(future_y + sk_height / 2) / cell_size][(int)(future_x - sk_width) / cell_size];
+	char right_mid = lvl[(int)(future_y + sk_height / 2) / cell_size][(int)(future_x + sk_width) / cell_size];
+
+	if (right_mid == '#')
+	{
+		is_skeleton_facing_right = false;
+		skeleton_sprite.setScale(2, 2);
+	}
+
+	else if (left_mid == '#')
+
+	{
+		is_skeleton_facing_right = true;
+		skeleton_sprite.setScale(-2, 2);
+	}
+	else
+		skeleton_x = future_x;
+
+	// skeleton gravity work
+
+	future_y += skeleton_gravity;
+
+	char bottom_left = lvl[(int)(future_y + sk_height) / cell_size][(int)(skeleton_x) / cell_size];
+	char bottom_right = lvl[(int)(future_y + sk_height) / cell_size][(int)((skeleton_x)) / cell_size];
+	char bottom_mid = lvl[(int)(future_y + sk_height) / cell_size][(int)((skeleton_x + sk_width / 2)) / cell_size];
+	if (bottom_mid == '#' || bottom_right == '#' || bottom_left == '#')
+	{
+		future_y = ((float)(future_y + sk_height) / cell_size) * cell_size - sk_height;
+
+		skeleton_gravity = 0;
+	}
+	else
+	{
+		skeleton_gravity += 0.5f;
+	}
+
+	skeleton_y = future_y;
+	if (skeleton_x >= 512 && skeleton_x <= 530 && skeleton_y >= 761)
+	{
+		// teleport the skeleton to the top
+		skeleton_x = 512;
+		skeleton_y = 128;
+	}
+	skeleton_sprite.setPosition(skeleton_x, skeleton_y);
 }
 
 // walking animation of the player
@@ -297,107 +500,35 @@ void player_gravity(char **lvl, float &offset_x, float &offset_y, float &velocit
 	}
 }
 
-// displaying player
-void display_player(RenderWindow &window, bool player_Green, bool is_player_facing_right, Sprite GreenplayerFrame[], Sprite YellowplayerFrame[], int p_frame_index, float player_x, float player_y, int PlayerWidth, bool onGroundNow, Sprite &p1_j_sprite, Sprite &p2_j_sprite, bool &down_key, Sprite &p1_d_sprite, Sprite &p2_d_sprite)
-{
-	if (!down_key)
-	{
-		if (onGroundNow)
-		{
-			if (player_Green)
-			{
-				GreenplayerFrame[p_frame_index].setScale(is_player_facing_right ? -2 : 2, 2);
-				GreenplayerFrame[p_frame_index].setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
-				window.draw(GreenplayerFrame[p_frame_index]);
-			}
-			else
-			{
-				YellowplayerFrame[p_frame_index].setScale(is_player_facing_right ? -2 : 2, 2);
-				YellowplayerFrame[p_frame_index].setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
-				window.draw(YellowplayerFrame[p_frame_index]);
-			}
-		}
-		else
-		{
-			if (player_Green)
-			{
-				p1_j_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
-				p1_j_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
-				window.draw(p1_j_sprite);
-			}
-			else
-			{
-				p2_j_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
-				p2_j_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
-				window.draw(p2_j_sprite);
-			}
-		}
-	}
-	else
-	{
-		if (player_Green)
-		{
-			p1_d_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
-			p1_d_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
-			window.draw(p1_d_sprite);
-		}
-		else
-		{
-			p2_d_sprite.setScale(is_player_facing_right ? -2 : 2, 2);
-			p2_d_sprite.setPosition(player_x + (is_player_facing_right ? PlayerWidth : 0), player_y);
-			window.draw(p2_d_sprite);
-		}
-		down_key = false;
-	}
-}
-
-// displaying fire
-void display_fire(RenderWindow &window, bool is_player_facing_right, float &player_x, float &player_y, int PlayerWidth, Sprite &fire_Sprite, int FireWidth, float &fire_x, float &fire_y)
-{
-	fire_x = is_player_facing_right ? player_x + PlayerWidth + FireWidth : player_x - FireWidth;
-	fire_y = player_y + 15;
-	fire_Sprite.setPosition(fire_x, fire_y);
-	fire_Sprite.setScale(is_player_facing_right ? -2 : 2, 2);
-	window.draw(fire_Sprite);
-}
-
-// displaying controls
-void display_controls(RenderWindow &window, Sprite controls_Sprite[3])
-{
-	window.clear();
-	for (int i = 0; i < 3; i++)
-	{
-		controls_Sprite[i].setScale(2, 2);
-		if (i == 0) controls_Sprite[i].setPosition(413, 168);
-		else if (i == 1) controls_Sprite[i].setPosition(413, 368);
-		else if (i == 2) controls_Sprite[i].setPosition(413, 568);
-		window.draw(controls_Sprite[i]);
-	}
-}
-
 // is fire hit the enemy
-bool isHitting(float f_x, float f_y, float f_w, float f_h, float e_x, float e_y, float e_w, float e_h)
+bool isColliding(float f_x, float f_y, float f_w, float f_h, float e_x, float e_y, float e_w, float e_h)
 {
 	return !(f_x + f_w < e_x || f_x > e_x + e_w || f_y + f_h < e_y || f_y > e_y + e_h);
 }
 
 // player collision with enemies and resetting
-void enemies_collision(bool is_player_facing_right, float &player_x, float &player_y, float enemy_x, float enemy_y, int speed)
+void enemies_collision(bool is_player_facing_right, float &player_x, float &player_y, float enemy_x, float enemy_y, int speed, int &lives)
 {
-	int tem_player_x;
-	if (is_player_facing_right && speed < 0)
-	{
-		tem_player_x = player_x;
-	}
-	else
-		tem_player_x = player_x + 32;
+	float tem_player_x = (player_x);
+	float tem_enemy_x = (enemy_x);
+	///------------------------------------------------faces are discussed
+	if ((is_player_facing_right == true) && (speed > 0)) // both right
+		tem_player_x += 64;
+	if ((is_player_facing_right == false) && (speed < 0)) // both left
+		tem_player_x -= 20;
+	if ((is_player_facing_right == true) && (speed < 0)) // player right  and enemy left
+		tem_player_x;
+	if ((is_player_facing_right == false) && (speed > 0)) // player left and enemy right
+		tem_player_x += 40;
 
-	float x_dis = abs(tem_player_x - enemy_x);
+	float x_dis = abs(tem_player_x - tem_enemy_x);
 	float y_dis = abs(player_y - enemy_y);
 
 	// now checking the collision
 	if (x_dis <= 40 && y_dis <= 40)
 	{
+
+		lives = lives - 1;
 		player_x = 66;
 		player_y = 762;
 	}
@@ -421,16 +552,6 @@ void enemies_collision(bool is_player_facing_right, float &player_x, float &play
 // 	}
 // 	ghost_Sprite.setPosition(ghost_x, ghost_y);
 // }
-
-// displaying game over
-void display_gameover(RenderWindow &window, Text &gameoverText)
-{
-	gameoverText.setString("GAME OVER");
-	gameoverText.setCharacterSize(130);
-	gameoverText.setFillColor(Color::White);
-	gameoverText.setPosition(0, 448);
-	window.draw(gameoverText);
-}
 
 int main()
 {
@@ -464,11 +585,11 @@ int main()
 	// -----Player selection image-----
 	Sprite g_Select_Sprite;
 	g_Select_Sprite.setTexture(SpriteSheet);
-	g_Select_Sprite.setTextureRect(IntRect(185, 42, 31, 39));
+	g_Select_Sprite.setTextureRect(IntRect(940, 82, 38, 46));
 
 	Sprite y_Select_Sprite;
 	y_Select_Sprite.setTexture(SpriteSheet);
-	y_Select_Sprite.setTextureRect(IntRect(185, 231, 31, 39));
+	y_Select_Sprite.setTextureRect(IntRect(940, 271, 38, 46));
 
 	// -----fire-----
 	Sprite fire_Sprite;
@@ -482,18 +603,18 @@ int main()
 	// -----Ghostsheet loading-----
 	Texture ghostSheet;
 	ghostSheet.loadFromFile("Data/Ghost.png");
-	const int total_ghosts = 4;
+	const int total_ghosts = 8;
 
 	// -----ghost images-----
 	// x coordinates of ghosts
-	float ghost_x[total_ghosts] = {128, 128, 800, 800};
+	float ghost_x[total_ghosts] = {128, 128, 800, 800, 256, 256, 704, 704};
 	// y coordinates of ghosts
-	float ghost_y[total_ghosts] = {512, 256, 256, 512};
+	float ghost_y[total_ghosts] = {512, 256, 256, 512, 128, 640, 128, 640};
 	// speed of ghosts
-	float ghost_speed[total_ghosts] = {2, 2, 2, 2};
+	float ghost_speed[total_ghosts] = {2, 2, 2, 2, 2, 2, 2, 2};
 	// left and right limits of ghosts
-	float ghost_left_x[total_ghosts] = {64, 64, 840, 840};
-	float ghost_right_x[total_ghosts] = {320, 320, 1090, 1090};
+	float ghost_left_x[total_ghosts] = {64, 64, 840, 840, 256, 192, 704, 704};
+	float ghost_right_x[total_ghosts] = {320, 320, 1090, 1090, 512, 448, 896, 960};
 	// creating ghost sprites
 	Sprite ghost_sprite[total_ghosts];
 	for (int i = 0; i < total_ghosts; i++)
@@ -503,7 +624,12 @@ int main()
 		ghost_sprite[i].setScale(-2, 2);
 		ghost_sprite[i].setPosition(ghost_x[i], ghost_y[i]);
 	}
-	bool is_g_alive[total_ghosts] = {1, 1, 1, 1};
+	// kia wo mer gya he?
+	bool is_g_alive[total_ghosts] = {1, 1, 1, 1, 1, 1, 1, 1};
+	// kia wo suck ho rha he?
+	bool is_g_sucking[total_ghosts] = {0, 0, 0, 0};
+	// sucking timing
+	float die_g_timer[total_ghosts] = {0, 0, 0, 0};
 
 	// -----Skeletonsheet loading-----
 	Texture skeletonSheet;
@@ -515,11 +641,8 @@ int main()
 	float skeleton_x[total_skeletons] = {200, 800, 150, 900};
 	// y coordinates of skeletons
 	float skeleton_y[total_skeletons] = {120, 120, 370, 370};
-
-	// float skeleton_timer[total_skeletons] = {0, 20, 40, 10};
-
-	// float skeleton_velocity[total_skeletons] = {0, 0, 0, 0};
-	float skeleton_speed[total_skeletons] = {2, -2, 2, -2};
+	float skeleton_gravity[total_skeletons] = {0, 0, 0, 0};
+	float skeleton_speed[total_skeletons] = {1.5, 1.5, 1.5, 1.5};
 	// left and right limits of skeletons
 	float skeleton_left_x[total_skeletons] = {210, 670, 210, 750};
 	float skeleton_right_x[total_skeletons] = {400, 926, 400, 926};
@@ -532,7 +655,13 @@ int main()
 		skeleton_sprite[i].setScale(2, 2);
 		skeleton_sprite[i].setPosition(skeleton_x[i], skeleton_y[i]);
 	}
+	bool is_skeleton_facing_right[total_skeletons] = {0, 0, 0, 0};
+	// kia wo mer gya he?
 	bool is_s_alive[total_skeletons] = {1, 1, 1, 1};
+	// kia wo suck ho rha he?
+	bool is_s_sucking[total_skeletons] = {0, 0, 0, 0};
+	// sucking timing
+	float die_s_timer[total_skeletons] = {0, 0, 0, 0};
 
 	// -----The title image-----
 	Texture Title_Texture;
@@ -560,7 +689,7 @@ int main()
 	Font gamefont;
 	gamefont.loadFromFile("Data/font.ttf");
 	// setting text appers in selection
-	Text selectText, menuText, select_the_playerText, controlText, gameoverText, playgameText;
+	Text selectText, menuText, select_the_playerText, controlText, gameoverText, playgameText, EnterText, BackspaceText;
 	selectText.setFont(gamefont);
 	// main menu
 	menuText.setFont(gamefont);
@@ -572,6 +701,48 @@ int main()
 	controlText.setFont(gamefont);
 	// setting text appers in gameover
 	gameoverText.setFont(gamefont);
+	// Enter to select
+	EnterText.setFont(gamefont);
+	// Backspace to return to the menu while currently in the control window
+	BackspaceText.setFont(gamefont);
+
+	// score n lives
+	int scores = 0;
+	int player_lives = 3;
+	Text scoresText;
+	scoresText.setFont(gamefont);
+	scoresText.setCharacterSize(20);
+	scoresText.setFillColor(Color::White);
+	scoresText.setPosition(900, 80);
+
+	Text livesText;
+	livesText.setFont(gamefont);
+	livesText.setCharacterSize(20);
+	livesText.setFillColor(Color::White);
+	livesText.setPosition(185, 80);
+
+	//---------the power ups
+	// *****************power up for speed ************
+	Sprite speed_sprite;
+	float speed_x = 704;
+	float speed_y = 384;
+
+	speed_sprite.setTexture(SpriteSheet);
+	speed_sprite.setTextureRect(IntRect(21, 389, 21, 21));
+	speed_sprite.setScale(2, 2);
+	speed_sprite.setPosition(speed_x, speed_y);
+	bool speed_pu_present = true;
+
+	// ******************power up for life
+	Sprite life_sprite;
+	float life_x = 576;
+	float life_y = 128;
+
+	life_sprite.setTexture(SpriteSheet);
+	life_sprite.setTextureRect(IntRect(490, 386, 24, 24));
+	life_sprite.setScale(2, 2);
+	life_sprite.setPosition(life_x, life_y);
+	bool life_pu_present = true;
 
 	// ------Loading Green player------
 	Sprite p1_Sprite[8];
@@ -625,32 +796,6 @@ int main()
 			p2_Sprite[i].setTextureRect(IntRect(525, 220, 31, 42));
 	}
 
-	// ------Loading Skeleton------
-	// Sprite skeleton_Sprite[5];
-	// for (int i = 0; i < 5; i++)
-	// {
-	// 	skeleton_Sprite[i].setTexture(skeletonSheet);
-	// 	if (i == 0)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(8, 34, 32, 38));
-	// 	else if (i == 1)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(193, 33, 24, 39));
-	// 	else if (i == 2)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(223, 34, 26, 38));
-	// 	else if (i == 3)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(259, 33, 26, 39));
-	// 	else if (i == 4)
-	// 		skeleton_Sprite[i].setTextureRect(IntRect(291, 34, 31, 38));
-	// }
-	// Sprite skeletonFrame[5] = {skeleton_Sprite[0], skeleton_Sprite[1], skeleton_Sprite[2], skeleton_Sprite[3], skeleton_Sprite[4]};
-	// int sk_frame_index = 0;
-	// float sk_animation_timer = 0.0f;
-	// const float sk_animation_speed = 0.15f;
-	// float skeleton_x = 190;
-	// float skeleton_y = 248;
-	// int skeleton_width = 64;
-	// int skeleton_height = 78;
-	// bool is_skeleton_facing_right = true;
-
 	// -----arrays of both players sprites for animation walking----
 	Sprite GreenplayerFrame[5] = {p1_Sprite[0], p1_Sprite[1], p1_Sprite[2], p1_Sprite[3], p1_Sprite[4]};
 	Sprite YellowplayerFrame[5] = {p2_Sprite[0], p2_Sprite[1], p2_Sprite[2], p2_Sprite[3], p2_Sprite[4]};
@@ -665,12 +810,12 @@ int main()
 	int menuarrInd = 0;
 
 	// So there are 5 states or windows to show the title means Tumblepop image, then menu, then selection, then controls, then game, then gameover
-	const int TITLE = 0;
-	const int MENU = 1;
-	const int SELECT = 2;
-	const int CONTROL = 3;
-	const int GAME = 4;
-	const int GAMEOVER = 5;
+	const int TITLE = 1;
+	const int MENU = 2;
+	const int SELECT = 3;
+	const int CONTROL = 4;
+	const int GAME = 5;
+	const int GAMEOVER = 6;
 	// The first is the title
 	int current_Window = TITLE;
 
@@ -710,10 +855,9 @@ int main()
 	bool is_player_facing_right = false;
 	// we made this instesd of using onGround because when up key presses player moves up, and durig all this motion we want to show different sprite and on landing the default sprite
 	bool onGroundNow = false;
-	// is fire hits the ememy?
-	bool hit = false;
 	// down key different sprite
 	bool down_key = false;
+	bool hit = false;
 
 	// creating level array
 	lvl = new char *[height];
@@ -844,52 +988,73 @@ int main()
 					down_key = true;
 				}
 			}
-
+			// player collision with power ups
+			if (isColliding(player_x, player_y, PlayerWidth, PlayerHeight, speed_x, speed_y, 30, 30) && speed_pu_present)
+			{
+				speed *= 2;
+				speed_pu_present = false;
+				speed_sprite.setPosition(speed_x, speed_y);
+			}
+			if (isColliding(player_x, player_y, PlayerWidth, PlayerHeight, life_x, life_y, 30, 30) && life_pu_present)
+			{
+				player_lives++;
+				life_pu_present = false;
+				life_sprite.setPosition(life_x, life_y);
+			}
 			// fire and enemies collision
 			if (Keyboard::isKeyPressed(Keyboard::Space))
 			{
 				for (int i = 0; i < total_skeletons; i++)
 				{
-					hit = isHitting(fire_x, fire_y, FireWidth, FireHeight, skeleton_x[i], skeleton_y[i], 64, 76);
-					if (hit)
+					hit = isColliding(fire_x, fire_y, FireWidth, FireHeight, skeleton_x[i], skeleton_y[i], 64, 76);
+					if (hit && is_s_alive[i])
+					{
+						scores += 75;
 						is_s_alive[i] = 0;
+						skeleton_speed[i] = 0; // stop movement
+					}
 				}
 				for (int i = 0; i < total_ghosts; i++)
 				{
-					bool hit = isHitting(fire_x, fire_y, FireWidth, FireHeight, ghost_x[i], ghost_y[i], 70, 64);
-					if (hit)
+					hit = isColliding(fire_x, fire_y, FireWidth, FireHeight, ghost_x[i], ghost_y[i], 70, 64);
+					if (hit && is_g_alive[i])
+					{
+						scores += 50;
 						is_g_alive[i] = 0;
+						ghost_speed[i] = 0; // stop movement
+					}
 				}
 			}
+			// Merne wali animation
 
 			// Animation of the player
 			if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
 			{
 				player_animation(p_animation_timer, p_animation_speed, p_frame_index);
 			}
-
 			// enemy skeleton move
-			enemy_move(skeleton_x, skeleton_speed, skeleton_y, skeleton_sprite, skeleton_left_x, skeleton_right_x, total_skeletons);
+			// skeleton special charecteristixs
+			for (int i = 0; i < total_skeletons; i++)
+			{
+				skeleton_move(is_skeleton_facing_right[i], lvl, skeleton_x[i], skeleton_y[i], skeleton_speed[i], skeleton_sprite[i], skeleton_gravity[i]);
+			}
 			// ghost move calling for  different functions
-			enemy_move(ghost_x, ghost_speed, ghost_y, ghost_sprite, ghost_left_x, ghost_right_x, total_ghosts);
-
+			ghost_move(ghost_x, ghost_speed, ghost_y, ghost_sprite, ghost_left_x, ghost_right_x, total_ghosts, is_g_sucking);
 			for (int i = 0; i < total_ghosts; i++)
 			{
 				// ghost_move(ghost_x[i],ghost_speed[i],ghost_y[i],ghost_sprite[i],ghost_left_x,ghost_right_x);
-				// is the specific ghost alive?
 				if (is_g_alive[i])
-					enemies_collision(is_player_facing_right, player_x, player_y, ghost_x[i], ghost_y[i], ghost_speed[i]);
+					enemies_collision(is_player_facing_right, player_x, player_y, ghost_x[i], ghost_y[i], ghost_speed[i], player_lives);
 			}
-
 			// skeleton collision function call
 			for (int i = 0; i < total_skeletons; i++)
 			{
-				// is the specific skeleton alive?
 				if (is_s_alive[i])
-					enemies_collision(is_player_facing_right, player_x, player_y, skeleton_x[i], skeleton_y[i], skeleton_speed[i]);
+					enemies_collision(is_player_facing_right, player_x, player_y, skeleton_x[i], skeleton_y[i], skeleton_speed[i], player_lives);
 			}
+			if (player_lives < 1)
+				current_Window = GAMEOVER;
 			// gravity of the player
-
 			player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth, ignoring_tiles);
 		}
 
@@ -902,20 +1067,22 @@ int main()
 		}
 		else if (current_Window == MENU)
 		{
-			main_menu(window, menuText, playgameText, select_the_playerText, controlText, menuarrInd);
+			main_menu(window, menuText, playgameText, select_the_playerText, controlText, menuarrInd, EnterText);
 		}
 		else if (current_Window == SELECT)
 		{
-			display_selection_screen(window, g_Select_Sprite, y_Select_Sprite, player_Green, selectText);
+			display_selection_screen(window, g_Select_Sprite, y_Select_Sprite, player_Green, selectText, EnterText);
 		}
 		else if (current_Window == CONTROL)
 		{
-			display_controls(window, controls_Sprite);
+			display_controls(window, controls_Sprite, BackspaceText);
 		}
 		else if (current_Window == GAME)
 		{
 			display_level(window, lvl, bgSprite, blockSprite, height, width, cell_size);
 
+			fire_y = player_y + 15;
+			fire_x = is_player_facing_right ? (player_x + PlayerWidth + FireWidth) : (player_x - FireWidth);
 			if (Keyboard::isKeyPressed(Keyboard::Space))
 				display_fire(window, is_player_facing_right, player_x, player_y, PlayerWidth, fire_Sprite, FireWidth, fire_x, fire_y);
 
@@ -925,66 +1092,16 @@ int main()
 			char bR = lvl[foot_y][(int)(player_x + PlayerWidth) / cell_size];
 			onGroundNow = (bL == '#' || bM == '#' || bR == '#');
 			display_player(window, player_Green, is_player_facing_right, GreenplayerFrame, YellowplayerFrame, p_frame_index, player_x, player_y, PlayerWidth, onGroundNow, p1_Sprite[6], p2_Sprite[6], down_key, p1_Sprite[7], p2_Sprite[7]);
-
 			display_health_image(window, p1_Sprite[5], p2_Sprite[5], player_Green);
-
-			// displaying the enemies
-			for (int i = 0; i < total_skeletons; i++)
-			{
-				if (is_s_alive[i])
-					window.draw(skeleton_sprite[i]);
-			}
-			for (int i = 0; i < total_skeletons; i++)
-			{
-				if (is_g_alive[i])
-					window.draw(ghost_sprite[i]);
-			}
+			display_enemies(window, skeleton_sprite, total_skeletons, ghost_sprite, total_ghosts, is_s_alive, is_g_alive);
+			display_powerups(window, scoresText, livesText, scores, player_lives, speed_pu_present, life_pu_present, speed_sprite, life_sprite);
 		}
 		else if (current_Window == GAMEOVER)
 		{
 			display_gameover(window, gameoverText);
 		}
-
 		window.display();
 	}
-
-	// sk_animation_timer += sk_animation_speed;
-	// if (is_skeleton_facing_right)
-	// {
-	// 	skeleton_x += 2;
-	// }
-	// else
-	// {
-	// 	skeleton_x -= 2;
-	// }
-	// char sk_bottom_mid, sk_bottom_right, sk_bottom_left, sk_right_mid, sk_left_mid;
-	// sk_bottom_left = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x) / cell_size];
-	// sk_bottom_right = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x + skeleton_width) / cell_size];
-	// sk_bottom_mid = lvl[(int)(skeleton_y + skeleton_height) / cell_size][(int)(skeleton_x + skeleton_width / 2) / cell_size];
-	// sk_right_mid = lvl[(int)(skeleton_y + skeleton_height / 2) / cell_size][(int)(skeleton_x + skeleton_width) / cell_size];
-	// sk_left_mid = lvl[(int)(skeleton_y + skeleton_height / 2) / cell_size][(int)(skeleton_x) / cell_size];
-	// if (sk_right_mid == '#')
-	// {
-	// 	is_skeleton_facing_right = false;
-	// }
-	// if (sk_left_mid == '#')
-	// {
-	// 	is_skeleton_facing_right = true;
-	// }
-	// if (!(sk_bottom_left == '#' || sk_bottom_mid == '#' || sk_bottom_right == '#'))
-	// {
-	// 	skeleton_y += 40;
-	// }
-	// if (sk_animation_timer >= 1.0f)
-	// {
-	// 	sk_animation_timer = 0.0f;
-	// 	sk_frame_index++;
-	// 	if (sk_frame_index > 4)
-	// 		sk_frame_index = 0;
-	// }
-	// skeletonFrame[sk_frame_index].setScale(is_skeleton_facing_right ? -2 : 2, 2);
-	// skeletonFrame[sk_frame_index].setPosition(skeleton_x + (is_skeleton_facing_right ? skeleton_width : 0), skeleton_y);
-	// window.draw(skeletonFrame[sk_frame_index]);
 
 	// stopping music and deleting level array
 	lvlMusic.stop();
