@@ -30,7 +30,7 @@ void display_selection_screen(RenderWindow &window, Sprite &g_Select_Sprite, Spr
 	EnterT.setString("PRESS ENTER TO SELECT");
 	EnterT.setCharacterSize(20);
 	EnterT.setFillColor(Color::White);
-	EnterT.setPosition(720, 860);
+	EnterT.setPosition(360, 860);
 
 	if (player_Green)
 		g_Select_Sprite.setScale(5.5, 5.5);
@@ -46,32 +46,35 @@ void display_selection_screen(RenderWindow &window, Sprite &g_Select_Sprite, Spr
 }
 
 // main menu
-void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_the_playerT, Text &controlT, int menuarrInd, Text &EnterT)
+void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_the_playerT, Text &controlT, int menuarrInd, Text &EnterT, Text &NewgameT)
 {
 	menuT.setString("MAIN MENU");
 	menuT.setCharacterSize(100);
 	menuT.setFillColor(Color::White);
 	menuT.setPosition(150, 100);
 
+	NewgameT.setString("NEW GAME");
+	NewgameT.setCharacterSize(65);
+	NewgameT.setPosition(100, 260);
+
 	playgameT.setString("PLAY GAME");
-	playgameT.setCharacterSize(70);
-	playgameT.setPosition(100, 320);
+	playgameT.setCharacterSize(65);
+	playgameT.setPosition(100, 410);
 
 	select_the_playerT.setString("PLAYER\n\tSELECTION");
-	select_the_playerT.setCharacterSize(70);
-	select_the_playerT.setPosition(100, 470);
+	select_the_playerT.setCharacterSize(65);
+	select_the_playerT.setPosition(100, 560);
 
 	controlT.setString("CONTROLS");
-	controlT.setCharacterSize(70);
-	controlT.setFillColor(Color::White);
-	controlT.setPosition(100, 720);
+	controlT.setCharacterSize(65);
+	controlT.setPosition(100, 770);
 
 	EnterT.setString("PRESS ENTER TO GO");
 	EnterT.setCharacterSize(20);
 	EnterT.setPosition(750, 860);
 
-	Text menuarr[3] = {playgameT, select_the_playerT, controlT};
-	for (int i = 0; i < 3; i++)
+	Text menuarr[4] = {NewgameT, playgameT, select_the_playerT, controlT};
+	for (int i = 0; i < 4; i++)
 	{
 		if (i == menuarrInd)
 			menuarr[i].setFillColor(Color::Cyan);
@@ -82,7 +85,7 @@ void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_
 	window.clear();
 	window.draw(menuT);
 	window.draw(EnterT);
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 		window.draw(menuarr[i]);
 	window.display();
 }
@@ -226,7 +229,7 @@ void display_player(RenderWindow &window, bool player_Green, bool is_player_faci
 }
 
 // displaying fire
-void display_fire(RenderWindow &window, bool is_player_facing_right, float &player_x, float &player_y, int PlayerWidth, Sprite &fire_Sprite, int FireWidth, float &fire_x, float &fire_y, bool player_Green)
+void display_fire(RenderWindow &window, bool is_player_facing_right, Sprite &fire_Sprite, float &fire_x, float &fire_y, bool player_Green)
 {
 	float scale = (player_Green) ? 2.0f : 2.4f;
 	fire_Sprite.setScale(is_player_facing_right ? -scale : scale, scale);
@@ -256,20 +259,38 @@ void display_controls(RenderWindow &window, Sprite controls_Sprite[3], Text &Bac
 	window.draw(BackspaceT);
 }
 
-// displaying game over
-void display_gameover(RenderWindow &window, Text &gameoverText, Text &EnterT)
+// display loose
+void display_loose(RenderWindow &window, Text &looseT, Text &BackspaceT)
 {
-	gameoverText.setString("GAME OVER");
-	gameoverText.setCharacterSize(130);
-	gameoverText.setFillColor(Color::White);
-	gameoverText.setPosition(0, 448);
+	looseT.setString(" 0 LIVES\n\nYOU LOOSE");
+	looseT.setCharacterSize(130);
+	looseT.setFillColor(Color::White);
+	looseT.setPosition(0, 248);
 
-	EnterT.setString("PRESS ENTER TO RETURN TO THE MENU");
-	EnterT.setCharacterSize(20);
-	EnterT.setPosition(450, 860);
+	BackspaceT.setString("PRESS BACKSPACE TO GO BACK TO THE MENU");
+	BackspaceT.setCharacterSize(20);
+	BackspaceT.setFillColor(Color::White);
+	BackspaceT.setPosition(175, 860);
 
-	window.draw(gameoverText);
-	window.draw(EnterT);
+	window.draw(BackspaceT);
+	window.draw(looseT);
+}
+
+// displaying game over
+void display_quit(RenderWindow &window, Text &quitText, Text &BackspaceT)
+{
+	quitText.setString("YOU QUITTED");
+	quitText.setCharacterSize(130);
+	quitText.setFillColor(Color::White);
+	quitText.setPosition(0, 448);
+
+	BackspaceT.setString("PRESS BACKSPACE TO GO BACK TO THE MENU");
+	BackspaceT.setCharacterSize(20);
+	BackspaceT.setFillColor(Color::White);
+	BackspaceT.setPosition(175, 860);
+
+	window.draw(BackspaceT);
+	window.draw(quitText);
 }
 
 void display_enemies(RenderWindow &window, Sprite skeleton_sprite[], int total_skeletons, Sprite ghost_sprite[], int total_ghosts, bool is_s_alive[], bool is_g_alive[])
@@ -426,7 +447,7 @@ void player_animation(float &p_animation_timer, float p_animation_speed, int &p_
 	}
 }
 
-// applying Grevity
+// applying Gravity
 void player_gravity(char **lvl, float &offset_x, float &offset_y, float &velocityY, bool &onGround, const float &gravity, float &terminal_Velocity, float &player_x, float &player_y, const int cell_size, int &Pheight, int &Pwidth, bool &ignoring_tiles)
 {
 
@@ -663,22 +684,17 @@ int main()
 	Font gamefont;
 	gamefont.loadFromFile("Data/font.ttf");
 	// setting text appers in selection
-	Text selectText, menuText, select_the_playerText, controlText, gameoverText, playgameText, EnterText, BackspaceText;
+	Text selectText, menuText, select_the_playerText, controlText, quitText, playgameText, EnterText, BackspaceText, looseText, NewgameText;
 	selectText.setFont(gamefont);
-	// main menu
 	menuText.setFont(gamefont);
-	// play game
 	playgameText.setFont(gamefont);
-	// Select the player
 	select_the_playerText.setFont(gamefont);
-	// setting text appers in controls
 	controlText.setFont(gamefont);
-	// setting text appers in gameover
-	gameoverText.setFont(gamefont);
-	// Enter to select
+	quitText.setFont(gamefont);
 	EnterText.setFont(gamefont);
-	// Backspace to return to the menu while currently in the control window
 	BackspaceText.setFont(gamefont);
+	looseText.setFont(gamefont);
+	NewgameText.setFont(gamefont);
 
 	// score n lives
 	int scores = 0;
@@ -789,7 +805,9 @@ int main()
 	const int SELECT = 3;
 	const int CONTROL = 4;
 	const int GAME = 5;
-	const int GAMEOVER = 6;
+	const int LOOSE = 6;
+	const int QUIT = 7;
+	const int NEWGAME = 8;
 	// The first is the title
 	int current_Window = TITLE;
 
@@ -879,17 +897,19 @@ int main()
 				{
 					// computing the indexes of the Text in the menu
 					if (ev.key.code == Keyboard::Down)
-						menuarrInd = (menuarrInd + 1) % 3;
+						menuarrInd = (menuarrInd + 1) % 4;
 					else if (ev.key.code == Keyboard::Up)
-						menuarrInd = (menuarrInd + 2) % 3;
+						menuarrInd = (menuarrInd + 3) % 4;
 
 					else if (ev.key.code == Keyboard::Enter)
 					{
-						if (menuarrInd == 0) // moves to the game
+						if (menuarrInd == 0) // moves to the new game
+							current_Window = NEWGAME;
+						if (menuarrInd == 1)
 							current_Window = GAME;
-						if (menuarrInd == 1) // moves to the selection of the player
+						if (menuarrInd == 2)
 							current_Window = SELECT;
-						if (menuarrInd == 2) // moves to the displaying control
+						if (menuarrInd == 3)
 							current_Window = CONTROL;
 					}
 				}
@@ -912,19 +932,71 @@ int main()
 				else if (current_Window == GAME)
 				{
 					if (ev.key.code == Keyboard::Q)
-						current_Window = GAMEOVER;
+						current_Window = QUIT;
 				}
-				else if (current_Window == GAMEOVER)
+				else if (current_Window == LOOSE)
 				{
-					if (ev.key.code == Keyboard::Enter)
-						window.close();
+					if (ev.key.code == Keyboard::BackSpace)
+						current_Window = MENU;
+				}
+				else if (current_Window == QUIT)
+				{
+					if (ev.key.code == Keyboard::BackSpace)
+						current_Window = MENU;
 				}
 			}
 		}
 		// we do not add game functions to the pollEvent loop bcz these all are longlasting means we want such functions to occur infinitely not just for one
 		// for example move player and enemies
-		if (current_Window == GAME)
+		if (current_Window == NEWGAME)
 		{
+			// reset all variables and arrays
+			fire_x = 0;
+			fire_y = 0;
+			ghost_y[0] = 128, ghost_x[1] = 128, ghost_x[2] = 800, ghost_x[3] = 800, ghost_x[4] = 256, ghost_x[5] = 256, ghost_x[6] = 704, ghost_x[7] = 704;
+			ghost_y[0] = 512, ghost_y[1] = 256, ghost_y[2] = 256, ghost_y[3] = 512, ghost_y[4] = 128, ghost_y[5] = 640, ghost_y[6] = 128, ghost_y[7] = 640;
+			skeleton_x[0] = 200, skeleton_x[1] = 800, skeleton_x[2] = 150, skeleton_x[3] = 900;
+			skeleton_y[0] = 120, skeleton_y[1] = 120, skeleton_y[2] = 370, skeleton_y[3] = 370;
+			for (int i = 0; i < total_ghosts; i++)
+			{
+				ghost_speed[i] = 2;
+				is_g_alive[i] = 1;
+				ghost_sprite[i].setScale(-2, 2);
+			}
+			for (int i = 0; i < total_skeletons; i++)
+			{
+				skeleton_gravity[i] = 0;
+				skeleton_speed[i] = 1.5;
+				is_skeleton_facing_right[i] = 0;
+				is_s_alive[i] = 1;
+				skeleton_sprite[i].setScale(2, 2);
+			}
+			scores = 0;
+			player_lives = 3;
+			speed_pu_present = true;
+			life_pu_present = true;
+			p_frame_index = 0;
+			p_animation_timer = 0.0f;
+			player_Green = false;
+			player_x = 382;
+			player_y = 763;
+			speed = 5;
+			onGround = false;
+			offset_x = 0;
+			offset_y = 0;
+			velocityY = 0;
+			reach_last_ground = false;
+			ignoring_tiles = false;
+			is_player_facing_right = false;
+			onGroundNow = false;
+			down_key = false;
+			hit = false;
+			current_Window = GAME;
+		}
+		else if (current_Window == GAME)
+		{
+			if (player_lives < 1)
+				current_Window = LOOSE;
 			// -----Movement of the player-----
 			if (Keyboard::isKeyPressed(Keyboard::Left))
 			{
@@ -1045,8 +1117,7 @@ int main()
 					}
 				}
 			}
-			// Merne wali animation
-
+			
 			// Animation of the player
 			if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
 			{
@@ -1072,8 +1143,6 @@ int main()
 				if (is_s_alive[i])
 					enemies_collision(is_player_facing_right, player_x, player_y, skeleton_x[i], skeleton_y[i], skeleton_speed[i], player_lives);
 			}
-			if (player_lives < 1)
-				current_Window = GAMEOVER;
 			// gravity of the player
 			player_gravity(lvl, offset_x, offset_y, velocityY, onGround, gravity, terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth, ignoring_tiles);
 		}
@@ -1087,7 +1156,7 @@ int main()
 		}
 		else if (current_Window == MENU)
 		{
-			main_menu(window, menuText, playgameText, select_the_playerText, controlText, menuarrInd, EnterText);
+			main_menu(window, menuText, playgameText, select_the_playerText, controlText, menuarrInd, EnterText, NewgameText);
 		}
 		else if (current_Window == SELECT)
 		{
@@ -1100,10 +1169,8 @@ int main()
 		else if (current_Window == GAME)
 		{
 			display_level(window, lvl, bgSprite, blockSprite, height, width, cell_size);
-			// displaying fire
-			float draw_fire_w = (player_Green) ? FireWidth : FireWidth * 1.2;
 			if (Keyboard::isKeyPressed(Keyboard::Space))
-				display_fire(window, is_player_facing_right, player_x, player_y, PlayerWidth, fire_Sprite, draw_fire_w, fire_x, fire_y, player_Green);
+				display_fire(window, is_player_facing_right, fire_Sprite, fire_x, fire_y, player_Green);
 
 			int foot_y = (int)(player_y + PlayerHeight + 2) / cell_size;
 			char bL = lvl[foot_y][(int)player_x / cell_size];
@@ -1115,9 +1182,13 @@ int main()
 			display_enemies(window, skeleton_sprite, total_skeletons, ghost_sprite, total_ghosts, is_s_alive, is_g_alive);
 			display_powerups(window, scoresText, livesText, scores, player_lives, speed_pu_present, life_pu_present, speed_sprite, life_sprite);
 		}
-		else if (current_Window == GAMEOVER)
+		else if (current_Window == LOOSE)
 		{
-			display_gameover(window, gameoverText, EnterText);
+			display_loose(window, looseText, BackspaceText);
+		}
+		else if (current_Window == QUIT)
+		{
+			display_quit(window, quitText, BackspaceText);
 		}
 		window.display();
 	}
