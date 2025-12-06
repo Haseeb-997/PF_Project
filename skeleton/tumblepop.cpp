@@ -1104,7 +1104,7 @@ int main()
 					float ghost_top_left;
 					// same the upper logic goes for enemies
 					if (ghost_speed[i] > 0) // facing right
-						ghost_top_left = ghost_x[i] - 64;
+						ghost_top_left = ghost_x[i] - 70;
 					else
 						ghost_top_left = ghost_x[i];
 
@@ -1117,7 +1117,7 @@ int main()
 					}
 				}
 			}
-			
+
 			// Animation of the player
 			if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
 			{
