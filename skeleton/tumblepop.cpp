@@ -12,27 +12,96 @@ using namespace std;
 int screen_x = 1152;
 int screen_y = 896;
 
-void reset_game(float &fire_x, float &fire_y, float ghost_y[], float ghost_x[], float skeleton_x[], float skeleton_y[], float ghost_speed[], bool is_g_alive[], Sprite ghost_sprite[], float skeleton_gravity[], float skeleton_speed[], bool is_skeleton_facing_right[], bool is_s_alive[], Sprite skeleton_sprite[], int &scores, int &player_lives, bool &speed_pu_present, bool &life_pu_present, int &p_frame_index, float &p_animation_timer, float &player_x, float &player_y, bool &onGround, float &offset_x, float &offset_y, float &velocityY, bool &reach_last_ground, bool &ignoring_tiles, bool &is_player_facing_right, bool &onGroundNow, bool &down_key, bool &hit, bool &pause, int &suction_count, int total_ghosts, int total_skeletons, int speed, int &level_no, bool &new_level)
+// reset game
+void reset_game(float &fire_x, float &fire_y, float ghost_y[], float ghost_x[], float skeleton_x[], float skeleton_y[], float ghost_speed[], bool is_g_alive[], Sprite ghost_sprite[], float skeleton_gravity[], float skeleton_speed[], bool is_skeleton_facing_right[], bool is_s_alive[], Sprite skeleton_sprite[], int &scores, int &player_lives, bool &speed_pu_present, bool &life_pu_present, int &p_frame_index, float &p_animation_timer, float &player_x, float &player_y, bool &onGround, float &offset_x, float &offset_y, float &velocityY, bool &reach_last_ground, bool &ignoring_tiles, bool &is_player_facing_right, bool &onGroundNow, bool &down_key, bool &hit, bool &pause, int &suction_count, int total_ghosts, int total_skeletons, int speed, int &level_no, bool &new_level, float ghost_right_x[], float ghost_left_x[], int sucked_enemies[])
 {
 	fire_x = 0;
 	fire_y = 0;
-	ghost_x[0] = 128, ghost_x[1] = 128, ghost_x[2] = 800, ghost_x[3] = 800, ghost_x[4] = 256, ghost_x[5] = 256, ghost_x[6] = 704, ghost_x[7] = 704;
-	ghost_y[0] = 512, ghost_y[1] = 256, ghost_y[2] = 256, ghost_y[3] = 512, ghost_y[4] = 128, ghost_y[5] = 640, ghost_y[6] = 128, ghost_y[7] = 640;
-	skeleton_x[0] = 200, skeleton_x[1] = 800, skeleton_x[2] = 150, skeleton_x[3] = 900;
-	skeleton_y[0] = 120, skeleton_y[1] = 120, skeleton_y[2] = 370, skeleton_y[3] = 370;
-	for (int i = 0; i < total_ghosts; i++)
+	if (level_no == 1)
 	{
-		ghost_speed[i] = 2;
-		is_g_alive[i] = 1;
-		ghost_sprite[i].setScale(-2, 2);
+		ghost_x[0] = 128, ghost_x[1] = 128, ghost_x[2] = 800, ghost_x[3] = 800, ghost_x[4] = 256, ghost_x[5] = 256, ghost_x[6] = 704, ghost_x[7] = 704;
+		ghost_y[0] = 512, ghost_y[1] = 256, ghost_y[2] = 256, ghost_y[3] = 512, ghost_y[4] = 128, ghost_y[5] = 640, ghost_y[6] = 128, ghost_y[7] = 640;
+		skeleton_x[0] = 200, skeleton_x[1] = 800, skeleton_x[2] = 150, skeleton_x[3] = 900;
+		skeleton_y[0] = 120, skeleton_y[1] = 120, skeleton_y[2] = 370, skeleton_y[3] = 370;
+		for (int i = 0; i < total_ghosts; i++)
+		{
+			ghost_speed[i] = 2;
+			is_g_alive[i] = 1;
+			ghost_sprite[i].setScale(-2, 2);
+		}
+		for (int i = 0; i < total_skeletons; i++)
+		{
+			skeleton_gravity[i] = 0;
+			skeleton_speed[i] = 1.5;
+			is_skeleton_facing_right[i] = 0;
+			is_s_alive[i] = 1;
+			skeleton_sprite[i].setScale(2, 2);
+		}
 	}
-	for (int i = 0; i < total_skeletons; i++)
+	else
 	{
-		skeleton_gravity[i] = 0;
-		skeleton_speed[i] = 1.5;
-		is_skeleton_facing_right[i] = 0;
-		is_s_alive[i] = 1;
-		skeleton_sprite[i].setScale(2, 2);
+
+		ghost_x[0] = 128;
+		ghost_x[1] = 128;
+		ghost_x[2] = 800;
+		ghost_x[3] = 800;
+		ghost_x[4] = 256;
+		ghost_x[5] = 256;
+		ghost_x[6] = 704;
+		ghost_x[7] = 704;
+
+		ghost_y[1] = 512;
+		ghost_y[2] = 256;
+		ghost_y[0] = 256;
+		ghost_y[3] = 512;
+		ghost_y[4] = 128;
+		ghost_y[5] = 640;
+		ghost_y[6] = 128;
+		ghost_y[7] = 640;
+
+		ghost_left_x[0] = 64;
+		ghost_left_x[1] = 64;
+		ghost_left_x[2] = 840;
+		ghost_left_x[3] = 840;
+		ghost_left_x[4] = 256;
+		ghost_left_x[5] = 192;
+		ghost_left_x[6] = 704;
+		ghost_left_x[7] = 704;
+
+		ghost_right_x[0] = 320;
+		ghost_right_x[1] = 320;
+		ghost_right_x[2] = 1090;
+		ghost_right_x[3] = 1090;
+		ghost_right_x[4] = 512;
+		ghost_right_x[5] = 448;
+		ghost_right_x[6] = 896;
+		ghost_right_x[7] = 960;
+
+		for (int i = 0; i < total_ghosts; i++)
+		{
+			ghost_speed[i] = 2;
+		}
+		// ghost_speed[0] = 2;
+		// ghost_speed[1] = 2;
+		// ghost_speed[2] = 2;
+		// ghost_speed[3] = 2;
+		// ghost_speed[4] = 2;
+		// ghost_speed[5] = 2;
+		// ghost_speed[6] = 2;
+		// ghost_speed[7] = 2;
+
+		for (int i = 0; i < total_ghosts; i++)
+		{
+			is_g_alive[i] = 1;
+		}
+		// is_g_alive[0] = 1;
+		// is_g_alive[1] = 1;
+		// is_g_alive[2] = 1;
+		// is_g_alive[3] = 1;
+		// is_g_alive[4] = 1;
+		// is_g_alive[5] = 1;
+		// is_g_alive[6] = 1;
+		// is_g_alive[7] = 1;
 	}
 	scores = 0;
 	player_lives = 3;
@@ -57,6 +126,8 @@ void reset_game(float &fire_x, float &fire_y, float ghost_y[], float ghost_x[], 
 	suction_count = 0;
 	level_no = 1;
 	new_level = true;
+	for (int i = 0; i < 3; i++)
+		sucked_enemies[i] = 0;
 }
 
 // Loading level
@@ -151,6 +222,10 @@ void setting_blocks_lvl2(char **lvl, int height, int width)
 
 void load_level(int level_no, Texture &bgTex, Sprite &bgSprite, char **lvl, const int height, const int width, const int &total_ghosts, float ghost_x[], float ghost_y[], float ghost_speed[], float ghost_left_x[], float ghost_right_x[], bool is_g_alive[])
 {
+	// -----storing '.' in the lvl array-----
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			lvl[i][j] = '.';
 	if (level_no == 1)
 	{
 		bgTex.loadFromFile("Data/bg.png");
@@ -368,7 +443,8 @@ void main_menu(RenderWindow &window, Text &menuT, Text &playgameT, Text &select_
 	window.display();
 }
 
-void display_level(RenderWindow &window, char **lvl, Sprite &bgSprite, Sprite &blockSprite, const int height, const int width, const int cell_size)
+// displaying the backgroung image and the blocks
+void display_level(RenderWindow &window, char **lvl, Sprite &bgSprite, Sprite &blockSprite, const int height, const int width, const int cell_size, Sprite &slant_upsprite, Sprite &slant_downsprite)
 {
 	window.draw(bgSprite);
 
@@ -381,6 +457,16 @@ void display_level(RenderWindow &window, char **lvl, Sprite &bgSprite, Sprite &b
 			{
 				blockSprite.setPosition(j * cell_size, i * cell_size);
 				window.draw(blockSprite);
+			}
+			if (lvl[i][j] == '+')
+			{
+				slant_upsprite.setPosition(j * cell_size, i * cell_size);
+				window.draw(slant_upsprite);
+			}
+			if (lvl[i][j] == '-')
+			{
+				slant_downsprite.setPosition(j * cell_size, i * cell_size);
+				window.draw(slant_downsprite);
 			}
 		}
 	}
@@ -818,6 +904,14 @@ int main()
 	char **lvl;
 	srand(time(0));
 	int level_no = 1;
+	Texture slant_uptex, slantdown_tex;
+	Sprite slant_upsprite, slant_downsprite;
+
+	slant_uptex.loadFromFile("Data/slantup.png");
+	slant_upsprite.setTexture(slant_uptex);
+
+	slantdown_tex.loadFromFile("Data/slantdown.png");
+	slant_downsprite.setTexture(slantdown_tex);
 
 	// ----------All images----------
 	// -----level and background textures and sprites-----
@@ -948,7 +1042,7 @@ int main()
 	Font gamefont;
 	gamefont.loadFromFile("Data/font.ttf");
 	// setting text appers in selection
-	Text selectText, menuText, select_the_playerText, controlText, quitText, playgameText, EnterText, BackspaceText, looseText, NewgameText, PauseText, WinText;
+	Text selectText, menuText, select_the_playerText, controlText, quitText, playgameText, EnterText, BackspaceText, looseText, NewgameText, PauseText, WinText, gletter, sletter, _0letter;
 	selectText.setFont(gamefont);
 	menuText.setFont(gamefont);
 	playgameText.setFont(gamefont);
@@ -961,6 +1055,9 @@ int main()
 	NewgameText.setFont(gamefont);
 	PauseText.setFont(gamefont);
 	WinText.setFont(gamefont);
+	gletter.setFont(gamefont);
+	sletter.setFont(gamefont);
+	_0letter.setFont(gamefont);
 
 	// score n lives
 	int scores = 0;
@@ -1215,17 +1312,21 @@ int main()
 						pause = !pause;
 					}
 					// removing one enemy from the bag
-					else if (ev.key.code == Keyboard::X)
+					else if (ev.key.code == Keyboard::X && !pause)
 					{
-						last_sucked = suction_count - 1;
-						if (sucked_enemies[last_sucked] == 1)
-							scores += 75;
-						else if (sucked_enemies[last_sucked] == 2)
-							scores += 50;
-						suction_count--;
+						if (suction_count > 0)
+						{
+							last_sucked = suction_count - 1;
+							if (sucked_enemies[last_sucked] == 1)
+								scores += 75; // skeleton
+							else if (sucked_enemies[last_sucked] == 2)
+								scores += 50; // ghost
+							suction_count--;
+							sucked_enemies[last_sucked] = 0;
+						}
 					}
 					// removing all enemies from the bag
-					else if (ev.key.code == Keyboard::Y)
+					else if (ev.key.code == Keyboard::Y && !pause)
 					{
 						for (int i = 0; i < 3; i++)
 						{
@@ -1233,6 +1334,7 @@ int main()
 								scores += 75;
 							else if (sucked_enemies[i] == 2)
 								scores += 50;
+							sucked_enemies[i] = 0;
 						}
 						suction_count = 0;
 					}
@@ -1253,8 +1355,17 @@ int main()
 						current_Window = MENU;
 					if (ev.key.code == Keyboard::Enter)
 					{
-						new_level = true;
 						level_no = 2;
+						new_level = true;
+						scores = 0;
+						player_lives = 3;
+						speed_pu_present = true;
+						life_pu_present = true;
+						player_x = 382;
+						player_y = 763;
+						speed = 5;
+						suction_count = 0;
+
 						current_Window = GAME;
 					}
 				}
@@ -1265,7 +1376,9 @@ int main()
 		if (current_Window == NEWGAME)
 		{
 			// reset all variables and arrays
-			reset_game(fire_x, fire_y, ghost_y, ghost_x, skeleton_x, skeleton_y, ghost_speed, is_g_alive, ghost_sprite, skeleton_gravity, skeleton_speed, is_skeleton_facing_right, is_s_alive, skeleton_sprite, scores, player_lives, speed_pu_present, life_pu_present, p_frame_index, p_animation_timer, player_x, player_y, onGround, offset_x, offset_y, velocityY, reach_last_ground, ignoring_tiles, is_player_facing_right, onGroundNow, down_key, hit, pause, suction_count, total_ghosts, total_skeletons, speed, level_no, new_level);
+			level_no = 1;
+			new_level = true;
+			reset_game(fire_x, fire_y, ghost_y, ghost_x, skeleton_x, skeleton_y, ghost_speed, is_g_alive, ghost_sprite, skeleton_gravity, skeleton_speed, is_skeleton_facing_right, is_s_alive, skeleton_sprite, scores, player_lives, speed_pu_present, life_pu_present, p_frame_index, p_animation_timer, player_x, player_y, onGround, offset_x, offset_y, velocityY, reach_last_ground, ignoring_tiles, is_player_facing_right, onGroundNow, down_key, hit, pause, suction_count, total_ghosts, total_skeletons, speed, level_no, new_level, ghost_right_x, ghost_left_x, sucked_enemies);
 			current_Window = GAME;
 		}
 		else if (current_Window == GAME)
@@ -1399,7 +1512,6 @@ int main()
 				}
 				// ghost move calling for  different functions
 				ghost_move(ghost_x, ghost_speed, ghost_y, ghost_sprite, ghost_left_x, ghost_right_x, total_ghosts);
-				// move the nikli hui ball
 			}
 			// pause finish
 
@@ -1477,7 +1589,7 @@ int main()
 		}
 		else if (current_Window == GAME)
 		{
-			display_level(window, lvl, bgSprite, blockSprite, height, width, cell_size);
+			display_level(window, lvl, bgSprite, blockSprite, height, width, cell_size, slant_upsprite, slant_downsprite);
 			if (Keyboard::isKeyPressed(Keyboard::Space) && !pause)
 				display_fire(window, is_player_facing_right, fire_Sprite, fire_x, fire_y, player_Green);
 			int foot_y = (int)(player_y + PlayerHeight + 2) / cell_size;
@@ -1489,6 +1601,42 @@ int main()
 			display_health_image(window, p1_Sprite[5], p2_Sprite[5], player_Green);
 			display_enemies(window, skeleton_sprite, total_skeletons, ghost_sprite, total_ghosts, is_s_alive, is_g_alive);
 			display_powerups(window, scoresText, livesText, scores, player_lives, speed_pu_present, life_pu_present, speed_sprite, life_sprite);
+			for (int i = 0; i < max_sucked_enemies; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					if (sucked_enemies[j] == 1)
+					{
+						sletter.setString("S");
+						sletter.setCharacterSize(70);
+						sletter.setFillColor(Color::Red);
+						if (j == 0) sletter.setPosition(450, 10);
+						else if (j == 1) sletter.setPosition(550, 10);
+						else if (j == 2) sletter.setPosition(650, 10);
+						window.draw(sletter);
+					}
+					else if (sucked_enemies[j] == 2)
+					{
+						gletter.setString("G");
+						gletter.setCharacterSize(70);
+						gletter.setFillColor(Color::Red);
+						if (j == 0) gletter.setPosition(450, 10);
+						else if (j == 1) gletter.setPosition(550, 10);
+						else if (j == 2) gletter.setPosition(650, 10);
+						window.draw(gletter);
+					}
+					else 
+					{
+						_0letter.setString("0");
+						_0letter.setCharacterSize(70);
+						_0letter.setFillColor(Color::Red);
+						if (j == 0) _0letter.setPosition(450, 10);
+						else if (j == 1) _0letter.setPosition(550, 10);
+						else if (j == 2) _0letter.setPosition(650, 10);
+						window.draw(_0letter);
+					}
+				}
+			}
 		}
 		else if (current_Window == LOOSE)
 		{
