@@ -1,4 +1,4 @@
-🎮 Tumble Pop – 2D Arcade Gamebr
+🎮 Tumble Pop – 2D Arcade Game<br>
 A 2D arcade‑style game built using C++ and SFML, inspired by classic retro gameplay.
 
 📌 Overview
